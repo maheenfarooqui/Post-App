@@ -8,7 +8,23 @@
 // <p>${descr.value}</p>`
     
 // }
+var userE =document.getElementById("userE");
+var userP = document.getElementById("userP");
 function authForm(){
-    
-    window.location.href = "index.html";
+    if(userE.value === "" && userE.value === ""){
+        Swal.fire({
+  icon: "error",
+  title: "Oops...",
+  text: "Email and password required",
+});
+
+    }else{
+         window.location.href = "index.html";
+        
+        }
+   
+}
+
+function logout(){
+     window.location.href = "login.html";
 }

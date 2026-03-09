@@ -8,6 +8,90 @@ body {
     background-color: #0F172A; /* Deep Navy Background */
     margin: 0;
     overflow-x: hidden;
+    color: white;
+}
+:root {
+    --bg-dark: #0F172A;
+    --card-dark: #1E293B;
+    --cyan-accent: #22D3EE;
+}
+
+.bgdark{
+    background-color: #0F172A;
+}
+.logo-nav {
+    height: 70px; /* Professional standard height */
+    width: auto;
+}
+
+/* User Profile Circle styling */
+.user-profile-circle {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+    color: #0F172A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.user-profile-circle:hover {
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+}
+
+/* Logout Button Hover */
+.hover-cyan:hover {
+    color: #22D3EE !important;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+}
+.custom-input::placeholder {
+    color: #6F7A8D !important; /* Aapka preferred light grey color */
+    opacity: 0.7; /* Isse color thora soft ho jata hai */
+}
+
+/* Glassmorphism Effect for Post Cards */
+.postCard {
+    background-color: var(--card-dark);
+    border-radius: 12px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.postCard:hover {
+    transform: translateY(-3px); /* Subtle lift on hover */
+}
+
+.user-profile-circle {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(45deg, #22D3EE, #06B6D4);
+    color: #0F172A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.text-cyan { color: var(--cyan-accent); }
+
+.btn-cyan {
+    background-color: var(--cyan-accent);
+    color: #0F172A;
+    border: none;
+}
+
+.custom-input {
+    background-color: #111827 !important;
+    border: 1px solid #374151 !important;
+    color: white !important;
+}
+
+.custom-input:focus {
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
 }
 
 /* Left Section Background (Branding) */
@@ -26,6 +110,18 @@ body {
 /* Form Section Styling */
 .login-form-section {
     background-color: #0F172A;
+}
+.logbtn{
+    background-color:transparent;
+    color: #0F172A;
+    border: 1px solid #22D3EE;
+    border-radius: 8px;
+    transition: 0.3s ease;
+}
+.logbtn:hover {
+    background-color: #06B6D4;
+    transform: translateY(-2px);
+    color: #0F172A !important;
 }
 
 /* Custom Input Styling */
@@ -60,17 +156,11 @@ body {
     border-radius: 8px;
     font-weight: 500;
 }
-
-/* Branding Visual (Oval Shape from Image) */
-.oval-shape {
-    width: 200px;
-    height: 250px;
-    background: linear-gradient(to bottom, #1E293B, #334155);
-    border-radius: 50% / 35%; /* This creates the oval look from your screenshot */
-    margin: 0 auto;
-    opacity: 0.5;
+.logo{
+    width: 70px;
 }
-/* Date and Select arrow styling */
+
+
 .custom-input::-webkit-calendar-picker-indicator {
     filter: invert(1); /* Makes the calendar icon white */
 }
@@ -80,6 +170,10 @@ body {
 }
 .color{
     color: #6F7A8D;
+}
+.swal2-confirm{
+    background-color: #22D3EE !important;
+    color: #0F172A !important;
 }
 
 

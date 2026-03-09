@@ -1,53 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VibeNet - Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div class="container-fluid login-container vh-100">
-    <div class="row h-100">
-        
-        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-center branding-section p-lg-5">
-            
-                <div class="brand-visual mb-lg-4">
-                    <img src="assets/logo.png" alt="VibeNet Logo" class="img-fluid login-logo">
-                </div>
-               
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container-fluid login-container vh-100">
+      <div class="row h-100">
+        <div
+          class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-center branding-section p-lg-5"
+        >
+          <div class="brand-visual mb-lg-4">
+            <img
+              src="assets/logo.png"
+              alt="VibeNet Logo"
+              class="img-fluid login-logo"
+            />
+          </div>
         </div>
 
-        <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center login-form-section">
-            <div class="card bg-transparent border-0 w-100" style="max-width: 400px;">
-                <div class="card-body">
-
-                    <form>
-                        <div class="mb-4">
-                            <label class="form-label text-light small">Enter your Email</label>
-                            <input type="email" class="form-control custom-input" placeholder="email@example.com">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-light small">Password</label>
-                            <input type="password" class="form-control custom-input" placeholder="********">
-                        </div>
-                        
-                        <button type="button" class="btn btn-cyan w-100 py-3 fw-bold mb-4" onclick="authForm()">Log In</button>
-
-                        <div class="text-center">
-                            <p class="text-light small">Don't have an account? <a href="auth.html" class="text-white text-decoration-underline">Sign Up</a></p>
-                        </div>
-                    </form>
+        <div
+          class="col-12 col-lg-6 d-flex align-items-center justify-content-center login-form-section"
+        >
+          <div
+            class="card bg-transparent border-0 w-100"
+            style="max-width: 400px"
+          >
+            <div class="card-body">
+              <form>
+                <div class="mb-4">
+                  <label class="form-label text-light small"
+                    >Enter your Email</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control custom-input"
+                    placeholder="email@example.com"
+                    id="userE"
+                  />
                 </div>
+                <div class="mb-3">
+                  <label class="form-label text-light small">Password</label>
+                  <input
+                    type="password"
+                    class="form-control custom-input"
+                    placeholder="********"
+                    id="userP"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-cyan w-100 py-3 fw-bold mb-4"
+                  onclick="authForm()"
+                >
+                  Log In
+                </button>
+
+                <div class="text-center">
+                  <p class="text-light small">
+                    Don't have an account?
+                    <a
+                      href="auth.html"
+                      class="text-white text-decoration-underline"
+                      >Sign Up</a
+                    >
+                  </p>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
-
+      </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="app.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
