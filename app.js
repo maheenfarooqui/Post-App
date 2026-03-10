@@ -1,41 +1,72 @@
 var title = document.getElementById("title");
 var descr = document.getElementById("body");
 var post = document.getElementById("post");
-var currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
+var currentTime = moment().format("MMMM Do YYYY, h:mm:ss a");
+var bgImg = document.getElementsByClassName("bgimg");
+var userE = document.getElementById("userE");
+var userP = document.getElementById("userP");
+var userN = document.getElementById("userN");
+var cardBg;
 
+function addClass(src) {
+  cardBg = src;
+  for (var i = 0; i < bgImg.length; i++) {
+    bgImg[i].className = "bgimg";
+  }
 
+  event.target.classList.add("selected");
+}
 
-function sumbitPost(){
-  if(title.value.trim() === "" && descr.value.trim() === ""){
-     Swal.fire({
+function sumbitPost() {
+  if (title.value.trim() === "" && descr.value.trim() === "") {
+    Swal.fire({
       icon: "error",
       title: "Oops...",
       text: "Title and Description required",
     });
+  } else {
+    post.innerHTML += `<div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${cardBg}); background-attachment: fixed; background-size: cover; background-position: center;">
+              
+                <div class="d-flex align-items-center mb-3">
+                <div class="user-profile-circle me-3 bg-info">MZ</div>
+                <div>
+                  <h6 class="mb-0 text-white fw-bold">MAheen zuhra</h6>
+                  <span class="post-meta small color">Posted ${currentTime}</span>
+                </div>
+              </div>
+              <h5 class="text-cyan mb-2">${title.value}</h5>
+              <p class="text-light opacity-75">
+               ${descr.value}
+              </p>
+            
+              
+            </div>
+            <div class="py-3 border-top border-secondary d-flex gap-4">
+                <button
+                  class="btn  color p-0 text-decoration-none small" onclick="colorChange(this)"
+                >
+                  Like
+                </button>
+                <div class="d-flex gap-4  ms-auto">
+                  <button class="btn color p-0 text-decoration-none small" onclick="editPost(this)">
+                Edit
+            </button>
+
+            <button class="btn color p-0 text-decoration-none small" onclick="deletePost(this)">
+                Delete
+            </button>
+                </div>
+              </div>
+              `;
   }
-    
-    else{
-      post.innerHTML +=`<div class="postCard p-4 mb-4 border-0 shadow-sm">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="user-profile-circle me-3">AS</div>
-                        <div>
-                            <h6 class="mb-0 text-white fw-bold">Ahmed Sheikh</h6>
-                            <span class="post-meta small color">Posted ${currentTime}</span>
-                        </div>
-                    </div>
-                    <h5 class="text-cyan mb-2">${title.value}</h5>
-                    <p class="text-light opacity-75">${descr.value}</p>
-                    <div class="pt-3 border-top border-secondary d-flex gap-4">
-                        <button class="btn btn-link color p-0 text-decoration-none small">Like</button>
-                        
-                    </div>
-                </div>`
-    }
-title.value = "";
-descr.value = "";
+  title.value = "";
+  descr.value = "";
+  removeSelected();
+  
+  
+  
 }
-var userE = document.getElementById("userE");
-var userP = document.getElementById("userP");
+
 function authForm() {
   if (userE.value === "" && userE.value === "") {
     Swal.fire({
@@ -51,14 +82,18 @@ function authForm() {
 function logout() {
   window.location.href = "login.html";
 }
-function colorChange(){
-    var likeBtn = document.getElementById("like");
-    if(likeBtn.innerText === "Like"){
-       likeBtn.style.color = "#22D3EE";
-    likeBtn.innerText = "Liked"
-    }
-    else{
-        likeBtn.style.color = "#6F7A8D";
-        likeBtn.innerText = "Like"
-    }
+function colorChange(likeBtn) {
+  
+  if (likeBtn.innerText === "Like") {
+    likeBtn.style.color = "#22D3EE";
+    likeBtn.innerText = "Liked";
+  } else {
+    likeBtn.style.color = "#6F7A8D";
+    likeBtn.innerText = "Like";
+  }
+}
+function removeSelected(){
+   for (var i = 0; i < bgImg.length; i++) {
+    bgImg[i].className = "bgimg";
+  }
 }
