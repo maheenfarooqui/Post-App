@@ -190,6 +190,30 @@ body {
     border: 2px solid #22D3EE !important;
     box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
 }
+/* Custom Styling for VibeNet Notification */
+.vibenet-popup {
+    width: 300px !important; /* Box ki width kam ki */
+    padding: 0.5rem !important; 
+}
+
+.vibenet-title {
+    font-size: 14px !important; /* Title ka size */
+    font-weight: 600 !important;
+    margin-bottom: 0px !important;
+    color: #22D3EE !important;
+}
+
+.vibenet-content {
+    font-size: 12px !important; /* Text ka size */
+    color: #cbd5e1 !important; /* Light grey text */
+    margin-top: -5px !important;
+}
+
+/* Icon ka size chota karne ke liye */
+.swal2-icon {
+    zoom: 0.6 !important; /* Icon ko chota kar dega */
+    margin: 5px auto !important;
+}
 
 
 

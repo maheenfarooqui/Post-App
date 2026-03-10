@@ -6,16 +6,39 @@ var bgImg = document.getElementsByClassName("bgimg");
 var userE = document.getElementById("userE");
 var userP = document.getElementById("userP");
 var userN = document.getElementById("userN");
+var userIcon = document.getElementById("userIcon")
 var cardBg;
-
-function addClass(src) {
-  cardBg = src;
-  for (var i = 0; i < bgImg.length; i++) {
-    bgImg[i].className = "bgimg";
+ 
+function authForm() {
+  if (userE.value === "" && userE.value === "" && userN.value === "") {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Email and password required",
+    });
+  } else {
+    localStorage.setItem("userName", userN.value);
+    window.location.href = "index.html";
   }
-
-  event.target.classList.add("selected");
 }
+var userNAme = localStorage.getItem("userName");
+userIcon.innerText = userNAme.charAt(0).toUpperCase();
+
+Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "LogIn Successfully",
+  text: "Welcome to VibeNet " + userNAme,
+  color: '#ffffff',
+  background: '#1e293b',
+  showConfirmButton: false, 
+  timer: 3000, 
+  customClass: {
+    popup: 'vibenet-popup',
+    title: 'vibenet-title',
+    htmlContainer: 'vibenet-content' 
+  }
+});
 
 function sumbitPost() {
   if (title.value.trim() === "" && descr.value.trim() === "") {
@@ -25,12 +48,14 @@ function sumbitPost() {
       text: "Title and Description required",
     });
   } else {
+    
+   
     post.innerHTML += `<div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${cardBg}); background-attachment: fixed; background-size: cover; background-position: center;">
               
                 <div class="d-flex align-items-center mb-3">
-                <div class="user-profile-circle me-3 bg-info">MZ</div>
+                <div class="user-profile-circle me-3 bg-info">${userNAme.charAt(0).toUpperCase()}</div>
                 <div>
-                  <h6 class="mb-0 text-white fw-bold">MAheen zuhra</h6>
+                  <h6 class="mb-0 text-white fw-bold">${userNAme.charAt(0).toUpperCase() + userNAme.slice(1)}</h6>
                   <span class="post-meta small color">Posted ${currentTime}</span>
                 </div>
               </div>
@@ -62,28 +87,20 @@ function sumbitPost() {
   title.value = "";
   descr.value = "";
   removeSelected();
-  
-  
-  
 }
-
-function authForm() {
-  if (userE.value === "" && userE.value === "") {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Email and password required",
-    });
-  } else {
-    window.location.href = "index.html";
+function addClass(src) {
+  cardBg = src;
+  for (var i = 0; i < bgImg.length; i++) {
+    bgImg[i].className = "bgimg";
   }
+
+  event.target.classList.add("selected");
 }
 
 function logout() {
   window.location.href = "login.html";
 }
 function colorChange(likeBtn) {
-  
   if (likeBtn.innerText === "Like") {
     likeBtn.style.color = "#22D3EE";
     likeBtn.innerText = "Liked";
@@ -92,8 +109,8 @@ function colorChange(likeBtn) {
     likeBtn.innerText = "Like";
   }
 }
-function removeSelected(){
-   for (var i = 0; i < bgImg.length; i++) {
+function removeSelected() {
+  for (var i = 0; i < bgImg.length; i++) {
     bgImg[i].className = "bgimg";
   }
 }
