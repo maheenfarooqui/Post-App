@@ -113,7 +113,8 @@ function editPost(editBtn) {
 
 function deletePost(deleteBtn) {
   var getCard = deleteBtn.closest(".cardWraper");
-  getCard.style.display = "none";
+  // getCard.style.display = "none";
+  getCard.remove();
 }
 function addClass(src) {
   cardBg = src;
@@ -138,5 +139,6 @@ function removeSelected() {
   }
 }
 function logout() {
+  localStorage.removeItem("userName");
   window.location.href = "login.html";
 }
