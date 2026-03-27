@@ -45,11 +45,21 @@ Swal.fire({
 
 function sumbitPost() {
   if (title.value.trim() === "" && descr.value.trim() === "") {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Title and Description required",
-    });
+   Swal.fire({
+  icon: "error",
+  title: "Oops...",
+  text: "Title and Description are required!",
+  color: "#ffffff",
+  background: "#1e293b",
+  showConfirmButton: true,
+  confirmButtonText: "OK",
+  confirmButtonColor: "#ef4444", 
+  customClass: {
+    popup: "vibenet-popup",
+    title: "vibenet-title",
+    htmlContainer: "vibenet-content",
+  },
+});
     return;
   } else {
     post.innerHTML += `<div class="cardWraper">
