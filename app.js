@@ -3,16 +3,16 @@ var descr = document.getElementById("body");
 var post = document.getElementById("post");
 var bgImg = document.getElementsByClassName("bgimg");
 var userE = document.getElementById("userE");
+var userL = document.getElementById("userL");
 var userP = document.getElementById("userP");
 var userN = document.getElementById("userN");
 var userIcon = document.getElementById("userIcon");
 
 var cardBg = "";
-var editPostText = "";
 var currentTime = moment().format("MMMM Do YYYY, h:mm:ss a");
 
 function authForm() {
-  if (userE.value === "" && userE.value === "" && userN.value === "") {
+  if (userE.value === "" && userL.value === "" && userN.value === "") {
     Swal.fire({
       icon: "error",
       title: "Oops...",
@@ -20,11 +20,14 @@ function authForm() {
     });
   } else {
     localStorage.setItem("userName", userN.value);
-    window.location.href = "index.html";
+    localStorage.setItem("userLname", userL.value);
+    window.location.href = "dashboard.html";
   }
 }
 var userNAme = localStorage.getItem("userName");
-userIcon.innerText = userNAme.charAt(0).toUpperCase();
+var userLname = localStorage.getItem("userLname");
+userIcon.innerText =
+  userNAme.charAt(0).toUpperCase() + userLname.charAt(0).toUpperCase();
 
 Swal.fire({
   position: "top-end",
@@ -36,9 +39,7 @@ Swal.fire({
   showConfirmButton: false,
   timer: 3000,
   customClass: {
-    popup: "vibenet-popup",
-    title: "vibenet-title",
-    htmlContainer: "vibenet-content",
+   title: "vibenet-title",
   },
 });
 
@@ -50,14 +51,13 @@ function sumbitPost() {
       text: "Title and Description required",
     });
     return;
-  }
-  if (editPostText === "") {
+  } else {
     post.innerHTML += `<div class="cardWraper">
     <div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${cardBg}); background-attachment: fixed; background-size: cover; background-position: center;">
                 <div class="d-flex align-items-center mb-3">
-                <div class="user-profile-circle me-3 bg-info">${userNAme.charAt(0).toUpperCase()}</div>
+                <div class="user-profile-circle me-3 bg-info">${userNAme.charAt(0).toUpperCase()}${userLname.charAt(0).toUpperCase()}</div>
                 <div>
-                  <h6 class="mb-0 text-white fw-bold">${userNAme.charAt(0).toUpperCase() + userNAme.slice(1)}</h6>
+                  <h6 class="mb-0 text-white fw-bold">${userNAme.charAt(0).toUpperCase() + userNAme.slice(1)} ${userLname.charAt(0).toUpperCase() + userLname.slice(1)}</h6>
                   <span class="post-meta small color">Posted ${currentTime}</span>
                 </div>
               </div>
@@ -84,36 +84,52 @@ function sumbitPost() {
               </div>
     <div/>
               `;
-  } else {
-    editPostText.querySelector("h5").innerText = title.value;
-    editPostText.querySelector("p").innerText = descr.value;
-    var mainCard = editPostText.querySelector(".postCard");
-    mainCard.style.backgroundImage = `url(${cardBg})`;
   }
 
   title.value = "";
   descr.value = "";
-  editPostText = "";
-
   removeSelected();
 }
 
 function editPost(editBtn) {
+  Swal.fire({
+    icon: "question",
+    title: "Are you sure?",
+    text: "Do you really want to edit this post " + userNAme + "?",
+    color: "#ffffff",
+    background: "#1e293b",
+    confirmButtonText: "Yes, edit it",
+    confirmButtonColor: "#3b82f6",
+    cancelButtonColor: "#64748b",
+    customClass: {
+      title: "vibenet-title",
+    },
+  });
   var getEL = editBtn.closest(".cardWraper");
   var maintitle = getEL.querySelector("h5").innerText.trim();
   var mainText = getEL.querySelector("p").innerText.trim();
   title.value = maintitle;
   descr.value = mainText;
-  editPostText = getEL;
-
-  var mainCard = getEL.querySelector(".postCard");
-  var editBg = mainCard.style.backgroundImage;
-  cardBg = editBg;
+  getEL.remove();
 }
 
 function deletePost(deleteBtn) {
+  Swal.fire({
+    icon: "warning",
+    title: "Are you sure?",
+    text: "Do you really want to delete this post " + userNAme + "?",
+    color: "#ffffff",
+    background: "#1e293b",
+    confirmButtonText: "Yes, delete it",
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#64748b",
+    customClass: {
+      popup: "vibenet-popup",
+      title: "vibenet-title",
+      htmlContainer: "vibenet-content",
+    },
+  });
   var getCard = deleteBtn.closest(".cardWraper");
-  // getCard.style.display = "none";
   getCard.remove();
 }
 function addClass(src) {
@@ -140,5 +156,5 @@ function removeSelected() {
 }
 function logout() {
   localStorage.removeItem("userName");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
