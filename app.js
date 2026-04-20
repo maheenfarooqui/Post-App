@@ -10,7 +10,6 @@ var icon = document.getElementById("icon");
 var cardBg = "";
 var postEdit = false;
 var indexEdit = null;
-var currentTime = moment().format("MMMM Do YYYY, h:mm:ss a");
 
 function authForm() {
   if (userE.value === "" || userL.value === "" || userN.value === "") {
@@ -19,6 +18,7 @@ function authForm() {
       title: "Oops...",
       text: "Email and password required",
     });
+    return;
   }
   var storage = JSON.parse(localStorage.getItem("userData"));
 
@@ -55,7 +55,6 @@ function authForm() {
 
 function logIn() {
   var userData = localStorage.getItem("userData");
-  var userInfo = JSON.parse(userData);
   if (!userData) {
     Swal.fire({
       icon: "error",
@@ -64,7 +63,7 @@ function logIn() {
     });
     return;
   }
-  localStorage.setItem("currentUser", JSON.stringify(foundUser));
+  var userInfo = JSON.parse(userData);
   var foundUser = userInfo.find(function (user) {
     return (
       user.userFName === userN.value &&
@@ -114,12 +113,23 @@ function showUserIcon() {
   }
 }
 showUserIcon();
-window.onload = showUserIcon;
+window.onload = function () {
+  showUserIcon();
+  renderPost();
+};
 
 function renderPost() {
-  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
+  if (allPosts.length === 0) {
+    post.innerHTML =
+      "<p class='text-center text-secondary'>No posts yet. Be the first to post!</p>";
 
-  var allPosts = JSON.parse(localStorage.getItem("post"));
+    return;
+  }
+  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) {
+    return;
+  }
 
   var firstName = currentUser.userFName;
 
@@ -193,10 +203,9 @@ function renderPost() {
               `;
   }
 }
-window.onload = renderPost;
 
 function sumbitPost() {
-  if (title.value.trim() === "" && descr.value.trim() === "") {
+  if (title.value.trim() === "" || descr.value.trim() === "") {
     Swal.fire({
       icon: "error",
       title: "Oops...",
@@ -213,18 +222,29 @@ function sumbitPost() {
       },
     });
     return;
+  }
+  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
+  if (postEdit === true && indexEdit !== null) {
+    allPosts[indexEdit].title = title.value;
+    allPosts[indexEdit].descr = descr.value;
+    allPosts[indexEdit].time = moment().format("MMMM Do YYYY, h:mm:ss a");
+    allPosts[indexEdit].img = cardBg;
+
+    postEdit = false;
+    indexEdit = null;
+    document.getElementById("upBtn").innerHTML = "Post Now";
   } else {
-    var allPosts = JSON.parse(localStorage.getItem("post")) || [];
     var postObj = {
       title: title.value,
       descr: descr.value,
       img: cardBg,
-      time: new Date().toLocaleTimeString(),
+      time: moment().format("MMMM Do YYYY, h:mm:ss a"),
     };
     allPosts.push(postObj);
-    localStorage.setItem("post", JSON.stringify(allPosts));
-    renderPost();
+    
   }
+  localStorage.setItem("post", JSON.stringify(allPosts));
+    renderPost();
   title.value = "";
   descr.value = "";
   removeSelected();
@@ -238,7 +258,7 @@ function editPost(index) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
-    text: "Do you really want to edit this post?",
+    text: "Do you really want to edit this post " + firstName + "?",
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -252,9 +272,9 @@ function editPost(index) {
     if (result.isConfirmed) {
       title.value = allPosts[index].title;
       descr.value = allPosts[index].descr;
-      allPosts.splice(index, 1);
-      renderPost();
-      localStorage.setItem("post", JSON.stringify(allPosts));
+      postEdit = true;
+      indexEdit = index;
+      document.getElementById("upBtn").innerHTML = "Update Now";
     }
   });
 }
@@ -266,7 +286,7 @@ function deletePost(index) {
   Swal.fire({
     icon: "warning",
     title: "Are you sure?",
-    text: "Do you really want to delete this post ?",
+    text: "Do you really want to delete this post  " + firstName + "?",
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -293,7 +313,7 @@ function deletePost(index) {
     }
   });
 }
-function addClass(src) {
+function addClass(src, event) {
   cardBg = src;
   for (var i = 0; i < bgImg.length; i++) {
     bgImg[i].className = "bgimg";
@@ -316,5 +336,6 @@ function removeSelected() {
   }
 }
 function logout() {
+  localStorage.removeItem("currentUser");
   window.location.href = "index.html";
 }
