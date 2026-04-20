@@ -8,6 +8,8 @@ var userP = document.getElementById("userP");
 var userN = document.getElementById("userN");
 var icon = document.getElementById("icon");
 var cardBg = "";
+var postEdit = false;
+var indexEdit = null;
 var currentTime = moment().format("MMMM Do YYYY, h:mm:ss a");
 
 function authForm() {
@@ -111,9 +113,87 @@ function showUserIcon() {
       userInfo.userLName.charAt(0).toUpperCase();
   }
 }
-window.onload = function () {
-  showUserIcon();
-};
+showUserIcon();
+window.onload = showUserIcon;
+
+function renderPost() {
+  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  var allPosts = JSON.parse(localStorage.getItem("post"));
+
+  var firstName = currentUser.userFName;
+
+  var lastName = currentUser.userLName;
+
+  post.innerHTML = "";
+
+  for (var i = allPosts.length - 1; i >= 0; i--) {
+    post.innerHTML += `<div class="cardWraper">
+
+    <div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${allPosts[i].img}); background-attachment: fixed; background-size: cover; background-position: center;">
+
+                <div class="d-flex align-items-center mb-3">
+
+                <div class="user-profile-circle me-3 bg-info">${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}</div>
+
+                <div>
+
+                  <h6 class="mb-0 text-white fw-bold">${firstName.charAt(0).toUpperCase() + firstName.slice(1)} ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}</h6>
+
+                  <span class="post-meta small color">Posted ${allPosts[i].time}</span>
+
+                </div>
+
+              </div>
+
+              <h5 class="text-cyan mb-2">${allPosts[i].title}</h5>
+
+              <p class="text-light opacity-75">
+
+               ${allPosts[i].descr}
+
+              </p>
+
+            </div>
+
+            <div class="py-3 border-top border-secondary d-flex gap-4">
+
+                <button
+
+                  class="btn  color p-0 text-decoration-none small" onclick="colorChange(this)"
+
+                >
+
+                  Like
+
+                </button>
+
+                <div class="d-flex gap-4  ms-auto">
+
+                  <button class="btn color p-0 text-decoration-none small" onclick="editPost(${i})">
+
+                Edit
+
+            </button>
+
+
+
+            <button class="btn color p-0 text-decoration-none small" onclick="deletePost(${i})">
+
+                Delete
+
+            </button>
+
+                </div>
+
+              </div>
+
+    <div/>
+
+              `;
+  }
+}
+window.onload = renderPost;
 
 function sumbitPost() {
   if (title.value.trim() === "" && descr.value.trim() === "") {
@@ -134,78 +214,62 @@ function sumbitPost() {
     });
     return;
   } else {
-    var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-var firstName = currentUser.userFName;
-var lastName = currentUser.userLName;
-    post.innerHTML += `<div class="cardWraper">
-    <div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${cardBg}); background-attachment: fixed; background-size: cover; background-position: center;">
-                <div class="d-flex align-items-center mb-3">
-                <div class="user-profile-circle me-3 bg-info">${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}</div>
-                <div>
-                  <h6 class="mb-0 text-white fw-bold">${firstName.charAt(0).toUpperCase() + firstName.slice(1)} ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}</h6>
-                  <span class="post-meta small color">Posted ${currentTime}</span>
-                </div>
-              </div>
-              <h5 class="text-cyan mb-2">${title.value}</h5>
-              <p class="text-light opacity-75">
-               ${descr.value}
-              </p>
-            </div>
-            <div class="py-3 border-top border-secondary d-flex gap-4">
-                <button
-                  class="btn  color p-0 text-decoration-none small" onclick="colorChange(this)"
-                >
-                  Like
-                </button>
-                <div class="d-flex gap-4  ms-auto">
-                  <button class="btn color p-0 text-decoration-none small" onclick="editPost(this)">
-                Edit
-            </button>
-
-            <button class="btn color p-0 text-decoration-none small" onclick="deletePost(this)">
-                Delete
-            </button>
-                </div>
-              </div>
-    <div/>
-              `;
+    var allPosts = JSON.parse(localStorage.getItem("post")) || [];
+    var postObj = {
+      title: title.value,
+      descr: descr.value,
+      img: cardBg,
+      time: new Date().toLocaleTimeString(),
+    };
+    allPosts.push(postObj);
+    localStorage.setItem("post", JSON.stringify(allPosts));
+    renderPost();
   }
-
   title.value = "";
   descr.value = "";
   removeSelected();
 }
 
-function editPost(editBtn) {
+function editPost(index) {
+  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
+  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  var firstName = currentUser.userFName;
+
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
-    text: "Do you really want to edit this post " + userNAme + "?",
+    text: "Do you really want to edit this post " + firstName + "?",
     color: "#ffffff",
     background: "#1e293b",
+    showCancelButton: true,
     confirmButtonText: "Yes, edit it",
     confirmButtonColor: "#3b82f6",
     cancelButtonColor: "#64748b",
     customClass: {
       title: "vibenet-title",
     },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      title.value = allPosts[index].title;
+      descr.value = allPosts[index].descr;
+      allPosts.splice(index, 1);
+      renderPost();
+      localStorage.setItem("post", JSON.stringify(allPosts));
+    }
   });
-  var getEL = editBtn.closest(".cardWraper");
-  var maintitle = getEL.querySelector("h5").innerText.trim();
-  var mainText = getEL.querySelector("p").innerText.trim();
-  title.value = maintitle;
-  descr.value = mainText;
-  getEL.remove();
 }
 
-function deletePost(deleteBtn) {
+function deletePost(index) {
+  var allPosts = JSON.parse(localStorage.getItem("post"));
+  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  var firstName = currentUser.userFName;
   Swal.fire({
     icon: "warning",
     title: "Are you sure?",
-    text: "Do you really want to delete this post " + userNAme + "?",
+    text: "Do you really want to delete this post " + firstName + "?",
     color: "#ffffff",
     background: "#1e293b",
+    showCancelButton: true,
     confirmButtonText: "Yes, delete it",
     confirmButtonColor: "#ef4444",
     cancelButtonColor: "#64748b",
@@ -214,9 +278,20 @@ function deletePost(deleteBtn) {
       title: "vibenet-title",
       htmlContainer: "vibenet-content",
     },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      allPosts.splice(index, 1);
+      localStorage.setItem("post", JSON.stringify(allPosts));
+      renderPost();
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your post has been removed.",
+        icon: "success",
+        background: "#1e293b",
+        color: "#ffffff",
+      });
+    }
   });
-  var getCard = deleteBtn.closest(".cardWraper");
-  getCard.remove();
 }
 function addClass(src) {
   cardBg = src;
@@ -242,4 +317,5 @@ function removeSelected() {
 }
 function logout() {
   window.location.href = "index.html";
+
 }
