@@ -238,7 +238,7 @@ function editPost(index) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
-    text: "Do you really want to edit this post " + firstName + "?",
+    text: "Do you really want to edit this post?",
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -266,7 +266,7 @@ function deletePost(index) {
   Swal.fire({
     icon: "warning",
     title: "Are you sure?",
-    text: "Do you really want to delete this post " + firstName + "?",
+    text: "Do you really want to delete this post ?",
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -317,5 +317,4 @@ function removeSelected() {
 }
 function logout() {
   window.location.href = "index.html";
-
 }
