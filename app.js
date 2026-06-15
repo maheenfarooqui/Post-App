@@ -1,117 +1,211 @@
+const spbaseUrl = "https://qfykewvvzhgjuyuffzfr.supabase.co";
+const supbaseKey = "sb_publishable_kGHR9gdG2heLg66Z6K5jyQ_Wz6K9bE3";
+const sb = supabase.createClient(spbaseUrl, supbaseKey);
+
 var title = document.getElementById("title");
 var descr = document.getElementById("body");
 var post = document.getElementById("post");
 var bgImg = document.getElementsByClassName("bgimg");
-var userE = document.getElementById("userE");
-var userL = document.getElementById("userL");
-var userP = document.getElementById("userP");
-var userN = document.getElementById("userN");
 var icon = document.getElementById("icon");
+let singUpBtn = document.getElementById("sinUp");
+let logInBtn = document.getElementById("logIn");
 var cardBg = "";
 var postEdit = false;
 var indexEdit = null;
 
-function authForm() {
-  if (userE.value === "" || userL.value === "" || userN.value === "") {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Email and password required",
-    });
-    return;
-  }
-  var storage = JSON.parse(localStorage.getItem("userData"));
+if (singUpBtn) {
+  singUpBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    var userE = document.getElementById("userE");
+    var userL = document.getElementById("userL");
+    var userP = document.getElementById("userP");
+    var userN = document.getElementById("userN");
 
-  if (!storage) {
-    storage = [];
-  }
+    if (
+      userE.value.trim() === "" ||
+      userP.value.trim() === "" ||
+      userN.value.trim() === "" ||
+      userL.value.trim() === ""
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields are required!",
+        color: "#ffffff",
+        background: "#1e293b",
+      });
+      return;
+    }
 
-  var userDetails = {
-    userFName: userN.value,
-    userLName: userL.value,
-    userEmail: userE.value,
-    userPass: userP.value,
-  };
-
-  storage.push(userDetails);
-
-  localStorage.setItem("userData", JSON.stringify(storage));
-
-  Swal.fire({
-    icon: "success",
-    title: "Account create Successfully",
-    text: "Welcome to VibeNet " + userN.value.toUpperCase(),
-    color: "#ffffff",
-    background: "#1e293b",
-    showConfirmButton: false,
-    timer: 3000,
-    customClass: {
-      title: "vibenet-title",
-    },
-  }).then(() => {
-    window.location.href = "login.html";
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(userE.value.trim())) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Email",
+        text: "Please enter a valid email address (e.g., name@example.com).",
+        color: "#ffffff",
+        background: "#1e293b",
+      });
+      return;
+    }
+    // Shart: Min 8 chars, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Char
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(userP.value)) {
+      Swal.fire({
+        icon: "error",
+        title: "Weak Password",
+        text: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+        color: "#ffffff",
+        background: "#1e293b",
+      });
+      return;
+    }
+    try {
+      Swal.fire({
+        title: "Creating Account...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      const { data, error } = await sb.auth.signUp({
+        email: userE.value,
+        password: userP.value,
+        options: {
+          data: {
+            firstName: userN.value,
+            lastName: userL.value,
+          },
+        },
+      });
+      if (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Signup Failed",
+          text: error.message,
+          color: "#ffffff",
+          background: "#1e293b",
+        });
+        return;
+      }
+      Swal.fire({
+        icon: "success",
+        title: "Account created Successfully",
+        text:
+          "Welcome to VibeNet " +
+          userN.value.toUpperCase() +
+          "! Please check your email to confirm.",
+        color: "#ffffff",
+        background: "#1e293b",
+        showConfirmButton: false,
+        timer: 4000,
+        customClass: {
+          title: "vibenet-title",
+        },
+      }).then(() => {
+        // Success ke baad login page par redirect
+        window.location.href = "login.html";
+      });
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong. Please try again.",
+      });
+    }
   });
 }
 
-function logIn() {
-  var userData = localStorage.getItem("userData");
-  if (!userData) {
-    Swal.fire({
-      icon: "error",
-      title: "No account found",
-      text: "Please create an account first",
-    });
-    return;
-  }
-  var userInfo = JSON.parse(userData);
-  var foundUser = userInfo.find(function (user) {
-    return (
-      user.userFName === userN.value &&
-      user.userEmail === userE.value &&
-      user.userPass === userP.value
-    );
+if (logInBtn) {
+  logInBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    var userE = document.getElementById("userE");
+    var userP = document.getElementById("userP");
+
+    if (userE.value.trim() === "" || userP.value.trim() === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Name, Email, and Password are required to log in!",
+        color: "#ffffff",
+        background: "#1e293b",
+      });
+      return;
+    }
+    try {
+      Swal.fire({
+        title: "Logging you in...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      const { data, error } = await sb.auth.signInWithPassword({
+        email: userE.value,
+        password: userP.value,
+      });
+      if (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: error.message,
+          color: "#ffffff",
+          background: "#1e293b",
+        });
+        return;
+      }
+      const signedInUser = data.user;
+      const signupName = signedInUser.user_metadata?.firstName || "";
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "LogIn Successfully",
+        text: "Welcome back to VibeNet " + signupName.toUpperCase(),
+        color: "#ffffff",
+        background: "#1e293b",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: {
+          title: "vibenet-title",
+        },
+      }).then(() => {
+        window.location.href = "dashboard.html";
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong. Please try again.",
+      });
+    }
   });
-
-  if (foundUser) {
-    localStorage.setItem("currentUser", JSON.stringify(foundUser));
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "LogIn Successfully",
-      text: "Welcome to VibeNet " + userN.value.toUpperCase(),
-      color: "#ffffff",
-      background: "#1e293b",
-      showConfirmButton: false,
-      timer: 3000,
-      customClass: {
-        title: "vibenet-title",
-      },
-    }).then(() => {
-      window.location.href = "dashboard.html";
-    });
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Login Failed",
-      text: "Invalid name, email, or password",
-    });
-  }
 }
-function showUserIcon() {
-  var currentUser = localStorage.getItem("currentUser");
 
-  if (!currentUser) return;
+async function showUserIcon() {
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
 
-  var userInfo = JSON.parse(currentUser);
+  if (!user) return;
+  console.log("User Metadata Object:", user.user_metadata);
+  // 2. User ke metadata se first name aur last name nikaalo
+  const firstName = user.user_metadata?.firstName || "";
+
+  const lastName = user.user_metadata?.lastName || "";
 
   var icon = document.getElementById("icon");
-
   if (icon) {
-    icon.innerHTML =
-      userInfo.userFName.charAt(0).toUpperCase() +
-      userInfo.userLName.charAt(0).toUpperCase();
+    const firstInitial = firstName.charAt(0).toUpperCase();
+    const lastInitial = lastName.charAt(0).toUpperCase();
+
+    icon.innerHTML = firstInitial + lastInitial;
   }
 }
+
 showUserIcon();
 window.onload = function () {
   showUserIcon();
@@ -241,10 +335,9 @@ function sumbitPost() {
       time: moment().format("MMMM Do YYYY, h:mm:ss a"),
     };
     allPosts.push(postObj);
-    
   }
   localStorage.setItem("post", JSON.stringify(allPosts));
-    renderPost();
+  renderPost();
   title.value = "";
   descr.value = "";
   removeSelected();
