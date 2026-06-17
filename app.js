@@ -1,6 +1,7 @@
-const spbaseUrl = "https://qfykewvvzhgjuyuffzfr.supabase.co";
-const supbaseKey = "sb_publishable_kGHR9gdG2heLg66Z6K5jyQ_Wz6K9bE3";
-const sb = supabase.createClient(spbaseUrl, supbaseKey);
+var supabase = window.supabase.createClient(
+  "https://lmqvmgzxbawkkyxmjimh.supabase.co",
+  "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
+);
 
 var title = document.getElementById("title");
 var descr = document.getElementById("body");
@@ -12,6 +13,11 @@ let logInBtn = document.getElementById("logIn");
 var cardBg = "";
 var postEdit = false;
 var indexEdit = null;
+
+async function dataShow() {
+  const { data, error } = await supabase.from("postApp").select("*");
+  console.log(data);
+}
 
 if (singUpBtn) {
   singUpBtn.addEventListener("click", async (event) => {
@@ -69,7 +75,7 @@ if (singUpBtn) {
           Swal.showLoading();
         },
       });
-      const { data, error } = await sb.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: userE.value,
         password: userP.value,
         options: {
@@ -142,7 +148,7 @@ if (logInBtn) {
           Swal.showLoading();
         },
       });
-      const { data, error } = await sb.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: userE.value,
         password: userP.value,
       });
@@ -188,11 +194,10 @@ if (logInBtn) {
 async function showUserIcon() {
   const {
     data: { user },
-  } = await sb.auth.getUser();
+  } = await supabase.auth.getUser();
 
   if (!user) return;
-  console.log("User Metadata Object:", user.user_metadata);
-  // 2. User ke metadata se first name aur last name nikaalo
+
   const firstName = user.user_metadata?.firstName || "";
 
   const lastName = user.user_metadata?.lastName || "";
@@ -207,9 +212,11 @@ async function showUserIcon() {
 }
 
 showUserIcon();
+
 window.onload = function () {
   showUserIcon();
   renderPost();
+  dataShow();
 };
 
 function renderPost() {
