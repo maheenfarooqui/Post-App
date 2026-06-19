@@ -3,426 +3,301 @@ var supabase = window.supabase.createClient(
   "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
 );
 
-var title = document.getElementById("title");
-var descr = document.getElementById("body");
-var post = document.getElementById("post");
-var bgImg = document.getElementsByClassName("bgimg");
-var icon = document.getElementById("icon");
-let singUpBtn = document.getElementById("sinUp");
-let logInBtn = document.getElementById("logIn");
-var cardBg = "";
-var postEdit = false;
-var indexEdit = null;
+// --- DOM Elements & Global State ---
+const postContainer = document.getElementById("post");
+const bgImages = document.getElementsByClassName("bgimg");
+const iconElement = document.getElementById("icon");
+const signUpBtn = document.getElementById("sinUp");
+const logInBtn = document.getElementById("logIn");
+const titleInput = document.getElementById("title");
+const descrInput = document.getElementById("body");
+const actionBtn = document.getElementById("upBtn"); // Update/Submit Button
 
-async function dataShow() {
-  const { data, error } = await supabase.from("postApp").select("*");
-  console.log(data);
-}
+// App State
+let selectedBgImg = "";
+let isEditMode = false;
+let editIndex = null;
 
-if (singUpBtn) {
-  singUpBtn.addEventListener("click", async (event) => {
-    event.preventDefault();
-    var userE = document.getElementById("userE");
-    var userL = document.getElementById("userL");
-    var userP = document.getElementById("userP");
-    var userN = document.getElementById("userN");
-
-    if (
-      userE.value.trim() === "" ||
-      userP.value.trim() === "" ||
-      userN.value.trim() === "" ||
-      userL.value.trim() === ""
-    ) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "All fields are required!",
-        color: "#ffffff",
-        background: "#1e293b",
-      });
-      return;
-    }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(userE.value.trim())) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Email",
-        text: "Please enter a valid email address (e.g., name@example.com).",
-        color: "#ffffff",
-        background: "#1e293b",
-      });
-      return;
-    }
-    // Shart: Min 8 chars, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Char
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(userP.value)) {
-      Swal.fire({
-        icon: "error",
-        title: "Weak Password",
-        text: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
-        color: "#ffffff",
-        background: "#1e293b",
-      });
-      return;
-    }
-    try {
-      Swal.fire({
-        title: "Creating Account...",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      const { data, error } = await supabase.auth.signUp({
-        email: userE.value,
-        password: userP.value,
-        options: {
-          data: {
-            firstName: userN.value,
-            lastName: userL.value,
-          },
-        },
-      });
-      if (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Signup Failed",
-          text: error.message,
-          color: "#ffffff",
-          background: "#1e293b",
-        });
-        return;
-      }
-      Swal.fire({
-        icon: "success",
-        title: "Account created Successfully",
-        text:
-          "Welcome to VibeNet " +
-          userN.value.toUpperCase() +
-          "! Please check your email to confirm.",
-        color: "#ffffff",
-        background: "#1e293b",
-        showConfirmButton: false,
-        timer: 4000,
-        customClass: {
-          title: "vibenet-title",
-        },
-      }).then(() => {
-        // Success ke baad login page par redirect
-        window.location.href = "login.html";
-      });
-    } catch (err) {
-      console.error(err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Something went wrong. Please try again.",
-      });
-    }
-  });
-}
-
-if (logInBtn) {
-  logInBtn.addEventListener("click", async (event) => {
-    event.preventDefault();
-    var userE = document.getElementById("userE");
-    var userP = document.getElementById("userP");
-
-    if (userE.value.trim() === "" || userP.value.trim() === "") {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Name, Email, and Password are required to log in!",
-        color: "#ffffff",
-        background: "#1e293b",
-      });
-      return;
-    }
-    try {
-      Swal.fire({
-        title: "Logging you in...",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: userE.value,
-        password: userP.value,
-      });
-      if (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Login Failed",
-          text: error.message,
-          color: "#ffffff",
-          background: "#1e293b",
-        });
-        return;
-      }
-      const signedInUser = data.user;
-      const signupName = signedInUser.user_metadata?.firstName || "";
-
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "LogIn Successfully",
-        text: "Welcome back to VibeNet " + signupName.toUpperCase(),
-        color: "#ffffff",
-        background: "#1e293b",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: {
-          title: "vibenet-title",
-        },
-      }).then(() => {
-        window.location.href = "dashboard.html";
-      });
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Something went wrong. Please try again.",
-      });
-    }
-  });
-}
-
-async function showUserIcon() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return;
-
-  const firstName = user.user_metadata?.firstName || "";
-
-  const lastName = user.user_metadata?.lastName || "";
-
-  var icon = document.getElementById("icon");
-  if (icon) {
-    const firstInitial = firstName.charAt(0).toUpperCase();
-    const lastInitial = lastName.charAt(0).toUpperCase();
-
-    icon.innerHTML = firstInitial + lastInitial;
-  }
-}
-
-showUserIcon();
-
-window.onload = function () {
-  showUserIcon();
-  renderPost();
-  dataShow();
+// Mock User Session (Kyunki humne database/localStorage hata diya hai)
+const currentUser = {
+  firstName: "Maheen",
+  lastName: "Khan",
 };
 
-function renderPost() {
-  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
-  if (allPosts.length === 0) {
-    post.innerHTML =
-      "<p class='text-center text-secondary'>No posts yet. Be the first to post!</p>";
+// --- Initialization ---
+window.onload = function () {
+  dataRender();
+  showUserIcon();
+};
 
-    return;
-  }
-  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
-    return;
-  }
-
-  var firstName = currentUser.userFName;
-
-  var lastName = currentUser.userLName;
-
-  post.innerHTML = "";
-
-  for (var i = allPosts.length - 1; i >= 0; i--) {
-    post.innerHTML += `<div class="cardWraper">
-
-    <div class="postCard p-4 mb-4 border-0 shadow-sm mb-2" style="background-image: url(${allPosts[i].img}); background-attachment: fixed; background-size: cover; background-position: center;">
-
-                <div class="d-flex align-items-center mb-3">
-
-                <div class="user-profile-circle me-3 bg-info">${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}</div>
-
-                <div>
-
-                  <h6 class="mb-0 text-white fw-bold">${firstName.charAt(0).toUpperCase() + firstName.slice(1)} ${lastName.charAt(0).toUpperCase() + lastName.slice(1)}</h6>
-
-                  <span class="post-meta small color">Posted ${allPosts[i].time}</span>
-
-                </div>
-
-              </div>
-
-              <h5 class="text-cyan mb-2">${allPosts[i].title}</h5>
-
-              <p class="text-light opacity-75">
-
-               ${allPosts[i].descr}
-
-              </p>
-
-            </div>
-
-            <div class="py-3 border-top border-secondary d-flex gap-4">
-
-                <button
-
-                  class="btn  color p-0 text-decoration-none small" onclick="colorChange(this)"
-
-                >
-
-                  Like
-
-                </button>
-
-                <div class="d-flex gap-4  ms-auto">
-
-                  <button class="btn color p-0 text-decoration-none small" onclick="editPost(${i})">
-
-                Edit
-
-            </button>
-
-
-
-            <button class="btn color p-0 text-decoration-none small" onclick="deletePost(${i})">
-
-                Delete
-
-            </button>
-
-                </div>
-
-              </div>
-
-    <div/>
-
-              `;
+// --- User Profile Icon ---
+function showUserIcon() {
+  if (iconElement && currentUser) {
+    const firstInitial = currentUser.firstName.charAt(0).toUpperCase();
+    const lastInitial = currentUser.lastName.charAt(0).toUpperCase();
+    iconElement.innerHTML = firstInitial + lastInitial;
   }
 }
 
-function sumbitPost() {
-  if (title.value.trim() === "" || descr.value.trim() === "") {
+// supabase data get
+async function dataRender() {
+  try {
+    const { data, error } = await supabase
+      .from("postApp")
+      .select("*")
+      .order("id", { ascending: false });
+    console.log(data);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    postContainer.innerHTML = "";
+    data.forEach((post) => {
+      postContainer.innerHTML += `
+      <div class="cardWraper mb-4">
+        <div class="postCard p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
+          <div class="d-flex align-items-center mb-3">
+            <div class="user-profile-circle me-3 bg-info text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+              MZ
+            </div>
+            <div>
+              <h6 class="mb-0 text-white fw-bold">${currentUser.firstName} ${currentUser.lastName}</h6>
+              <span class="post-meta small text-muted">Posted${post.created_at}</span>
+            </div>
+          </div>
+          <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
+          <p class="text-light opacity-75">${post.description}</p>
+        </div>
+        
+        <div class="py-3 border-top border-secondary d-flex gap-4">
+          <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
+            Like
+          </button>
+          <div class="d-flex gap-4 ms-auto">
+            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+              Edit
+            </button>
+            <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    });
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+}
+
+// --- Render Posts Function ---
+// function renderPosts() {
+//   if (!postContainer) return;
+//   postContainer.innerHTML = "";
+
+//   // if (postsArray.length === 0) {
+//   //   postContainer.innerHTML = `<p class="text-light opacity-50 text-center">No posts available. Create one!</p>`;
+//   //   return;
+//   // }
+
+//  data.forEach((post, index) => {
+//     postContainer.innerHTML += `
+//       <div class="cardWraper mb-4">
+//         <div class="postCard p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
+//           <div class="d-flex align-items-center mb-3">
+//             <div class="user-profile-circle me-3 bg-info text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+//               ${currentUser.firstName.toLowerCase()}
+//             </div>
+//             <div>
+//               <h6 class="mb-0 text-white fw-bold">${currentUser.firstName} ${currentUser.lastName}</h6>
+//               <span class="post-meta small text-muted">Posted</span>
+//             </div>
+//           </div>
+//           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
+//           <p class="text-light opacity-75">${post.description}</p>
+//         </div>
+
+//         <div class="py-3 border-top border-secondary d-flex gap-4">
+//           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
+//             Like
+//           </button>
+//           <div class="d-flex gap-4 ms-auto">
+//             <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(${index})">
+//               Edit
+//             </button>
+//             <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${index})">
+//               Delete
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     `;
+//   });
+// }
+
+// --- Submit / Update Post ---
+async function sumbitPost() {
+  const titleVal = titleInput.value.trim();
+  const descrVal = descrInput.value.trim();
+
+  if (titleVal === "" || descrVal === "") {
     Swal.fire({
       icon: "error",
       title: "Oops...",
       text: "Title and Description are required!",
       color: "#ffffff",
       background: "#1e293b",
-      showConfirmButton: true,
-      confirmButtonText: "OK",
       confirmButtonColor: "#ef4444",
-      customClass: {
-        popup: "vibenet-popup",
-        title: "vibenet-title",
-        htmlContainer: "vibenet-content",
-      },
     });
     return;
   }
-  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
-  if (postEdit === true && indexEdit !== null) {
-    allPosts[indexEdit].title = title.value;
-    allPosts[indexEdit].descr = descr.value;
-    allPosts[indexEdit].time = moment().format("MMMM Do YYYY, h:mm:ss a");
-    allPosts[indexEdit].img = cardBg;
 
-    postEdit = false;
-    indexEdit = null;
-    document.getElementById("upBtn").innerHTML = "Post Now";
+  if (isEditMode) {
+    try {
+      const { data, error } = await supabase
+        .from("postApp")
+        .update({
+          title: titleVal,
+          description: descrVal,
+          bgImage: selectedBgImg,
+        })
+        .eq("id", editIndex)
+        .select();
+      if (error) {
+        console.log(error);
+        return;
+      }
+      isEditMode = false;
+      editIndex = null;
+      if (actionBtn) actionBtn.innerHTML = "Submit";
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   } else {
-    var postObj = {
-      title: title.value,
-      descr: descr.value,
-      img: cardBg,
-      time: moment().format("MMMM Do YYYY, h:mm:ss a"),
-    };
-    allPosts.push(postObj);
+    try {
+      const { data, error } = await supabase
+        .from("postApp")
+        .insert({
+          title: titleVal,
+          description: descrVal,
+          bgImage: selectedBgImg,
+        })
+        .select();
+      console.log(data);
+      if (error) {
+        console.log(error);
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
   }
-  localStorage.setItem("post", JSON.stringify(allPosts));
-  renderPost();
-  title.value = "";
-  descr.value = "";
-  removeSelected();
+
+  titleInput.value = "";
+  descrInput.value = "";
+  selectedBgImg = "";
+  removeSelectedBgClass();
+ dataRender();
 }
 
-function editPost(index) {
-  var allPosts = JSON.parse(localStorage.getItem("post")) || [];
-  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  var firstName = currentUser.userFName;
-
+// --- Edit Post Trigger ---
+function editPost(id, title, description, time, bgimg) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
-    text: "Do you really want to edit this post " + firstName + "?",
+    text: `Do you really want to edit this post, ${currentUser.firstName}?`,
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
     confirmButtonText: "Yes, edit it",
     confirmButtonColor: "#3b82f6",
     cancelButtonColor: "#64748b",
-    customClass: {
-      title: "vibenet-title",
-    },
   }).then((result) => {
     if (result.isConfirmed) {
-      title.value = allPosts[index].title;
-      descr.value = allPosts[index].descr;
-      postEdit = true;
-      indexEdit = index;
-      document.getElementById("upBtn").innerHTML = "Update Now";
+      // Data ko wapas input fields mein daalna
+      titleInput.value = title;
+      descrInput.value = description;
+      selectedBgImg = bgimg;
+
+      isEditMode = true;
+      editIndex = id;
+
+      if (actionBtn) actionBtn.innerHTML = "Update Now";
+
+      // Screen scroll up karke user ko inputs tak le jayein
+      titleInput.scrollIntoView({ behavior: "smooth" });
     }
   });
 }
 
-function deletePost(index) {
-  var allPosts = JSON.parse(localStorage.getItem("post"));
-  var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  var firstName = currentUser.userFName;
+// --- Delete Post ---
+async function deletePost(id) {
+  console.log(id);
+
   Swal.fire({
     icon: "warning",
     title: "Are you sure?",
-    text: "Do you really want to delete this post  " + firstName + "?",
+    text: `Do you really want to delete this post, ${currentUser.firstName}?`,
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it",
     confirmButtonColor: "#ef4444",
     cancelButtonColor: "#64748b",
-    customClass: {
-      popup: "vibenet-popup",
-      title: "vibenet-title",
-      htmlContainer: "vibenet-content",
-    },
-  }).then((result) => {
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      allPosts.splice(index, 1);
-      localStorage.setItem("post", JSON.stringify(allPosts));
-      renderPost();
+      // Array se post remove karein
+      // postsArray.splice(index, 1);
+
+      try {
+        const { data, error } = await supabase
+          .from("postApp")
+          .delete()
+          .eq("id", id)
+          .select();
+        if (error) {
+          console.log(error);
+          return;
+        }
+        dataRender();
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+
       Swal.fire({
         title: "Deleted!",
         text: "Your post has been removed.",
         icon: "success",
         background: "#1e293b",
         color: "#ffffff",
+        timer: 1500,
+        showConfirmButton: false,
       });
     }
   });
 }
-function addClass(src, event) {
-  cardBg = src;
-  for (var i = 0; i < bgImg.length; i++) {
-    bgImg[i].className = "bgimg";
-  }
 
-  event.target.classList.add("selected");
+// --- Background Image Selection ---
+function addClass(src, event) {
+  selectedBgImg = src;
+  removeSelectedBgClass();
+  if (event && event.target) {
+    event.target.classList.add("selected");
+  }
 }
-function colorChange(likeBtn) {
-  if (likeBtn.innerText === "Like") {
+
+function removeSelectedBgClass() {
+  for (let i = 0; i < bgImages.length; i++) {
+    bgImages[i].classList.remove("selected");
+  }
+}
+
+// --- Like Button Toggle ---
+function toggleLike(likeBtn) {
+  if (likeBtn.innerText.trim() === "Like") {
     likeBtn.style.color = "#22D3EE";
     likeBtn.innerText = "Liked";
   } else {
@@ -430,12 +305,38 @@ function colorChange(likeBtn) {
     likeBtn.innerText = "Like";
   }
 }
-function removeSelected() {
-  for (var i = 0; i < bgImg.length; i++) {
-    bgImg[i].className = "bgimg";
-  }
+
+// --- Sign Up / Login Forms Mock (Kyunki backend nhi hai ab) ---
+if (signUpBtn) {
+  signUpBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Account Mocked Successfully! Redirecting...",
+      timer: 2000,
+      showConfirmButton: false,
+    }).then(() => {
+      window.location.href = "login.html";
+    });
+  });
 }
+
+if (logInBtn) {
+  logInBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    Swal.fire({
+      icon: "success",
+      title: "Logged In",
+      text: "Welcome back!",
+      timer: 2000,
+      showConfirmButton: false,
+    }).then(() => {
+      window.location.href = "dashboard.html";
+    });
+  });
+}
+
 function logout() {
-  localStorage.removeItem("currentUser");
   window.location.href = "index.html";
 }
