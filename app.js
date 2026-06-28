@@ -3,41 +3,81 @@ var supabase = window.supabase.createClient(
   "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --- DOM Elements & Global State ---
 const postContainer = document.getElementById("post");
 const bgImages = document.getElementsByClassName("bgimg");
 const iconElement = document.getElementById("icon");
-const signUpBtn = document.getElementById("sinUp");
-const logInBtn = document.getElementById("logIn");
 const titleInput = document.getElementById("title");
 const descrInput = document.getElementById("body");
-const actionBtn = document.getElementById("upBtn"); // Update/Submit Button
+const actionBtn = document.getElementById("upBtn");
 
 // App State
 let selectedBgImg = "";
 let isEditMode = false;
 let editIndex = null;
+let userFname =null;
+let userLname =null
 
-// Mock User Session (Kyunki humne database/localStorage hata diya hai)
-const currentUser = {
-  firstName: "Maheen",
-  lastName: "Khan",
-};
 
-// --- Initialization ---
+
+
+
 window.onload = function () {
   dataRender();
   showUserIcon();
 };
+async function showUserIcon() {
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-// --- User Profile Icon ---
-function showUserIcon() {
-  if (iconElement && currentUser) {
-    const firstInitial = currentUser.firstName.charAt(0).toUpperCase();
-    const lastInitial = currentUser.lastName.charAt(0).toUpperCase();
-    iconElement.innerHTML = firstInitial + lastInitial;
+  if (error || !user) {
+    console.log("No user logged in");
+    return;
+  }
+
+
+
+  if (user.user_metadata) {
+    
+
+    const firstName = user.user_metadata.first_name || "";
+    const lastName = user.user_metadata.last_name || "";
+
+    const firstInitial = firstName.charAt(0).toUpperCase();
+    const lastInitial = lastName.charAt(0).toUpperCase();
+
+    const iconElement = document.getElementById("icon");
+    if (iconElement) {
+      iconElement.innerHTML = firstInitial + lastInitial;
+    }
+    userFname =firstName;
+    userLname =lastName;
   }
 }
+
+
 
 // supabase data get
 async function dataRender() {
@@ -46,7 +86,7 @@ async function dataRender() {
       .from("postApp")
       .select("*")
       .order("id", { ascending: false });
-    console.log(data);
+   
     if (error) {
       console.log(error);
       return;
@@ -55,13 +95,13 @@ async function dataRender() {
     data.forEach((post) => {
       postContainer.innerHTML += `
       <div class="cardWraper mb-4">
-        <div class="postCard p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
+        <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
           <div class="d-flex align-items-center mb-3">
-            <div class="user-profile-circle me-3 bg-info text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-              MZ
+            <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+              ${userFname.charAt(0).toUpperCase()}${userLname.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h6 class="mb-0 text-white fw-bold">${currentUser.firstName} ${currentUser.lastName}</h6>
+              <h6 class="mb-0 text-white fw-bold">${userFname} ${userLname}</h6>
               <span class="post-meta small text-muted">Posted${post.created_at}</span>
             </div>
           </div>
@@ -91,50 +131,6 @@ async function dataRender() {
   }
 }
 
-// --- Render Posts Function ---
-// function renderPosts() {
-//   if (!postContainer) return;
-//   postContainer.innerHTML = "";
-
-//   // if (postsArray.length === 0) {
-//   //   postContainer.innerHTML = `<p class="text-light opacity-50 text-center">No posts available. Create one!</p>`;
-//   //   return;
-//   // }
-
-//  data.forEach((post, index) => {
-//     postContainer.innerHTML += `
-//       <div class="cardWraper mb-4">
-//         <div class="postCard p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
-//           <div class="d-flex align-items-center mb-3">
-//             <div class="user-profile-circle me-3 bg-info text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-//               ${currentUser.firstName.toLowerCase()}
-//             </div>
-//             <div>
-//               <h6 class="mb-0 text-white fw-bold">${currentUser.firstName} ${currentUser.lastName}</h6>
-//               <span class="post-meta small text-muted">Posted</span>
-//             </div>
-//           </div>
-//           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
-//           <p class="text-light opacity-75">${post.description}</p>
-//         </div>
-
-//         <div class="py-3 border-top border-secondary d-flex gap-4">
-//           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
-//             Like
-//           </button>
-//           <div class="d-flex gap-4 ms-auto">
-//             <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(${index})">
-//               Edit
-//             </button>
-//             <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${index})">
-//               Delete
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     `;
-//   });
-// }
 
 // --- Submit / Update Post ---
 async function sumbitPost() {
@@ -199,15 +195,15 @@ async function sumbitPost() {
   descrInput.value = "";
   selectedBgImg = "";
   removeSelectedBgClass();
- dataRender();
+  dataRender();
 }
 
-// --- Edit Post Trigger ---
+// Edit Post
 function editPost(id, title, description, time, bgimg) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
-    text: `Do you really want to edit this post, ${currentUser.firstName}?`,
+    text: `Do you really want to edit this post?`,
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -216,7 +212,7 @@ function editPost(id, title, description, time, bgimg) {
     cancelButtonColor: "#64748b",
   }).then((result) => {
     if (result.isConfirmed) {
-      // Data ko wapas input fields mein daalna
+  
       titleInput.value = title;
       descrInput.value = description;
       selectedBgImg = bgimg;
@@ -226,7 +222,6 @@ function editPost(id, title, description, time, bgimg) {
 
       if (actionBtn) actionBtn.innerHTML = "Update Now";
 
-      // Screen scroll up karke user ko inputs tak le jayein
       titleInput.scrollIntoView({ behavior: "smooth" });
     }
   });
@@ -239,7 +234,7 @@ async function deletePost(id) {
   Swal.fire({
     icon: "warning",
     title: "Are you sure?",
-    text: `Do you really want to delete this post, ${currentUser.firstName}?`,
+    text: `Do you really want to delete this post?`,
     color: "#ffffff",
     background: "#1e293b",
     showCancelButton: true,
@@ -248,8 +243,6 @@ async function deletePost(id) {
     cancelButtonColor: "#64748b",
   }).then(async (result) => {
     if (result.isConfirmed) {
-      // Array se post remove karein
-      // postsArray.splice(index, 1);
 
       try {
         const { data, error } = await supabase
@@ -305,38 +298,12 @@ function toggleLike(likeBtn) {
     likeBtn.innerText = "Like";
   }
 }
-
-// --- Sign Up / Login Forms Mock (Kyunki backend nhi hai ab) ---
-if (signUpBtn) {
-  signUpBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Account Mocked Successfully! Redirecting...",
-      timer: 2000,
-      showConfirmButton: false,
-    }).then(() => {
-      window.location.href = "login.html";
-    });
-  });
-}
-
-if (logInBtn) {
-  logInBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    Swal.fire({
-      icon: "success",
-      title: "Logged In",
-      text: "Welcome back!",
-      timer: 2000,
-      showConfirmButton: false,
-    }).then(() => {
-      window.location.href = "dashboard.html";
-    });
-  });
-}
-
-function logout() {
+async function logout() {
+  try {
+    const { error } = await supabase.auth.signOut()
+  } catch (error) {
+    console.log(error);
+    
+  }
   window.location.href = "index.html";
 }
