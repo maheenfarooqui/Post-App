@@ -114,7 +114,7 @@ async function dataRender() {
             Like
           </button>
           <div class="d-flex gap-4 ms-auto">
-            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
               Edit
             </button>
             <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
@@ -199,7 +199,7 @@ async function sumbitPost() {
 }
 
 // Edit Post
-function editPost(id, title, description, time, bgimg) {
+function editPost(e,id, title, description, time, bgimg) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
@@ -223,6 +223,11 @@ function editPost(id, title, description, time, bgimg) {
       if (actionBtn) actionBtn.innerHTML = "Update Now";
 
       titleInput.scrollIntoView({ behavior: "smooth" });
+      var card = e.target.parentNode.parentNode.parentNode
+      card.remove()
+      
+      
+      
     }
   });
 }
