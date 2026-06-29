@@ -3,29 +3,6 @@ var supabase = window.supabase.createClient(
   "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // --- DOM Elements & Global State ---
 const postContainer = document.getElementById("post");
 const bgImages = document.getElementsByClassName("bgimg");
@@ -38,30 +15,25 @@ const actionBtn = document.getElementById("upBtn");
 let selectedBgImg = "";
 let isEditMode = false;
 let editIndex = null;
-let userFname =null;
-let userLname =null
-
-
-
-
+let userFname = null;
+let userLname = null;
 
 window.onload = function () {
   dataRender();
   showUserIcon();
 };
 async function showUserIcon() {
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error || !user) {
     console.log("No user logged in");
     return;
   }
 
-
-
   if (user.user_metadata) {
-    
-
     const firstName = user.user_metadata.first_name || "";
     const lastName = user.user_metadata.last_name || "";
 
@@ -72,12 +44,10 @@ async function showUserIcon() {
     if (iconElement) {
       iconElement.innerHTML = firstInitial + lastInitial;
     }
-    userFname =firstName;
-    userLname =lastName;
+    userFname = firstName;
+    userLname = lastName;
   }
 }
-
-
 
 // supabase data get
 async function dataRender() {
@@ -86,7 +56,7 @@ async function dataRender() {
       .from("postApp")
       .select("*")
       .order("id", { ascending: false });
-   
+
     if (error) {
       console.log(error);
       return;
@@ -130,7 +100,6 @@ async function dataRender() {
     return;
   }
 }
-
 
 // --- Submit / Update Post ---
 async function sumbitPost() {
@@ -199,7 +168,7 @@ async function sumbitPost() {
 }
 
 // Edit Post
-function editPost(e,id, title, description, time, bgimg) {
+function editPost(e, id, title, description, time, bgimg) {
   Swal.fire({
     icon: "question",
     title: "Are you sure?",
@@ -212,7 +181,6 @@ function editPost(e,id, title, description, time, bgimg) {
     cancelButtonColor: "#64748b",
   }).then((result) => {
     if (result.isConfirmed) {
-  
       titleInput.value = title;
       descrInput.value = description;
       selectedBgImg = bgimg;
@@ -223,11 +191,8 @@ function editPost(e,id, title, description, time, bgimg) {
       if (actionBtn) actionBtn.innerHTML = "Update Now";
 
       titleInput.scrollIntoView({ behavior: "smooth" });
-      var card = e.target.parentNode.parentNode.parentNode
-      card.remove()
-      
-      
-      
+      var card = e.target.parentNode.parentNode.parentNode;
+      card.remove();
     }
   });
 }
@@ -248,7 +213,6 @@ async function deletePost(id) {
     cancelButtonColor: "#64748b",
   }).then(async (result) => {
     if (result.isConfirmed) {
-
       try {
         const { data, error } = await supabase
           .from("postApp")
@@ -305,10 +269,9 @@ function toggleLike(likeBtn) {
 }
 async function logout() {
   try {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut();
   } catch (error) {
     console.log(error);
-    
   }
   window.location.href = "index.html";
 }
