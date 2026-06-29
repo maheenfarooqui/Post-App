@@ -187,12 +187,11 @@ function editPost(e, id, title, description, time, bgimg) {
 
       isEditMode = true;
       editIndex = id;
-
+      var card = e.target.parentNode.parentNode.parentNode;
+      card.remove();
       if (actionBtn) actionBtn.innerHTML = "Update Now";
 
       titleInput.scrollIntoView({ behavior: "smooth" });
-      var card = e.target.parentNode.parentNode.parentNode;
-      card.remove();
     }
   });
 }
