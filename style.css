@@ -45,6 +45,15 @@ body {
   color: #6f7a8d !important;
   opacity: 0.7;
 }
+#searchPost {
+  color: #6f7a8d !important;
+}
+
+/* 2. Jo "Search..." placeholder likha aata hy, us ka color */
+#searchPost::placeholder {
+  color: #6f7a8d !important;
+  opacity: 1; /* Browser default opacity ko override karne ke liye */
+}
 
 .postCard {
   background-color: #1e293b;
@@ -115,7 +124,62 @@ body {
   transform: translateY(-2px);
   color: #0f172a !important;
 }
+.custom-i {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+.custom-i:focus {
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+  border-color: #22d3ee !important;
+}
+/* imageupload */
+/* 1. Default boring input ko chupane ke liye */
+.hide-input {
+  display: none !important;
+}
 
+/* 2. Upload Label ko aap ke theme ke mutabiq style karna */
+.btn-upload-cyan {
+  display: inline-block;
+  background-color: #22d3ee !important; /* Cyan color */
+  color: #0f172a !important; /* Dark text contrast ke liye */
+  padding: 8px 15px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px; /* Aap ki baqi inputs jaisa radius */
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+/* 3. Hover Effect (Jaisa aap ki baqi buttons par hy) */
+.btn-upload-cyan:hover {
+  background-color: #06b6d4 !important; /* Thora dark cyan */
+  transform: translateY(-2px); /* Smooth lift effect */
+}
+/* search */
+/* Input aur Icon Button ko aapas mein jorhne ke liye */
+.style-search-group .custom-i:focus {
+  box-shadow: none !important;
+}
+
+/* Jab input focus ho to poori group par border cyan ho jaye (Optional par pyara lagega) */
+.style-search-group:focus-within .custom-i {
+  border-color: #22d3ee !important;
+}
+
+/* Icon ki styling */
+.style-search-group button i {
+  transition: 0.2s ease;
+}
+
+/* 4. Active click effect */
+.btn-upload-cyan:active {
+  transform: translateY(0);
+}
 .custom-input {
   background-color: #1e293b !important;
   border: 1px solid #334155 !important;

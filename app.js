@@ -3,6 +3,27 @@ var supabase = window.supabase.createClient(
   "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
 );
 
+// async function postsee(){
+//   try {
+//     const { data, error } = await supabase
+//   .from('ourPost')
+//   .insert({title: titleVal,
+//           description: descrVal,
+//           bgImage: selectedBgImg,})
+//   .select()
+//   console.log(data);
+//   if(error){
+// console.log(error);
+
+//   }
+
+//   } catch (error) {
+//     console.log(error);
+
+//   }
+// }
+// postsee()
+
 // --- DOM Elements & Global State ---
 const postContainer = document.getElementById("post");
 const bgImages = document.getElementsByClassName("bgimg");
@@ -10,6 +31,25 @@ const iconElement = document.getElementById("icon");
 const titleInput = document.getElementById("title");
 const descrInput = document.getElementById("body");
 const actionBtn = document.getElementById("upBtn");
+const imageInput = document.getElementById("imgInput");
+const previewImg = document.getElementById("previewImg");
+
+imageInput.addEventListener("change", function () {
+  var file = imageInput.files[0];
+  if (file) {
+    var reader = new FileReader();
+    console.log(reader);
+    reader.onload = function (e) {
+      // console.log("event",e.target.result);
+      const uploadedSrc = e.target.result;
+      previewImg.src = uploadedSrc;
+      previewImg.style.display = "block";
+      addClass(uploadedSrc, { target: previewImg });
+    };
+    
+  }
+  reader.readAsDataURL(file);
+});
 
 // App State
 let selectedBgImg = "";
@@ -46,6 +86,62 @@ async function showUserIcon() {
     }
     userFname = firstName;
     userLname = lastName;
+  }
+}
+
+async function searchPost() {
+  let searchPost = document.getElementById("searchPost").value;
+  try {
+    const { data, error } = await supabase
+      .from("postApp")
+      .select()
+      .or(`title.ilike.%${searchPost},description.ilike.%${searchPost}`);
+      // .or(`title.ilike.%${query}%,description.ilike.%${query}%`);
+    //   const { data, error } = await supabase
+    // .from('postApp')
+    // .select()
+    // .ilike('title', `%${searchPost}`)
+    console.log(data);
+    postContainer.innerHTML = "";
+    data.forEach((post) => {
+      postContainer.innerHTML += `
+      <div class="cardWraper mb-4">
+        <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
+          <div class="d-flex align-items-center mb-3">
+            <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+              ${userFname.charAt(0).toUpperCase()}${userLname.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h6 class="mb-0 text-white fw-bold">${userFname} ${userLname}</h6>
+              <span class="post-meta small text-muted">Posted${post.created_at}</span>
+            </div>
+          </div>
+          <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
+          <p class="text-light opacity-75">${post.description}</p>
+        </div>
+        
+        <div class="py-3 border-top border-secondary d-flex gap-4">
+          <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
+            Like
+          </button>
+          <div class="d-flex gap-4 ms-auto">
+            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+              Edit
+            </button>
+            <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    });
+
+    if (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -129,6 +225,7 @@ async function sumbitPost() {
         })
         .eq("id", editIndex)
         .select();
+
       if (error) {
         console.log(error);
         return;
@@ -163,6 +260,8 @@ async function sumbitPost() {
   titleInput.value = "";
   descrInput.value = "";
   selectedBgImg = "";
+  previewImg.style.display = "none";
+  previewImg.src = "";
   removeSelectedBgClass();
   dataRender();
 }

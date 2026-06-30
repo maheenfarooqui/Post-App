@@ -13,10 +13,11 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <nav
+    <!-- <nav
       class="navbar navbar-expand-lg border-bottom border-secondary sticky-top bgdark"
     >
       <div class="container">
@@ -34,6 +35,17 @@
           </div>
 
           <div class="col-4 d-flex justify-content-end">
+            <input
+              type="search"
+              id="searchPost"
+              class="form-control me-3 custom-i"
+              placeholder="Search"
+            />
+             <button
+              class="me-3 btn btn-link text-decoration-none text-light opacity-75 hover-cyan fw-semibold py-1 px-3 logbtn"
+               onclick="searchPost()"
+            >Search</button>
+            
             <button
               class="btn btn-link text-decoration-none text-light opacity-75 hover-cyan fw-semibold py-1 px-3 logbtn"
               onclick="logout()"
@@ -43,8 +55,49 @@
           </div>
         </div>
       </div>
-    </nav>
+    </nav> -->
 
+
+    <nav class="navbar navbar-expand-lg border-bottom border-secondary sticky-top bgdark py-3">
+  <div class="container">
+    <div class="row w-100 align-items-center g-0">
+      
+      <div class="col-3 d-flex justify-content-start">
+        <div class="user-profile-circle shadow-cyan" id="icon"></div>
+      </div>
+
+      <div class="col-6 d-flex justify-content-center">
+        <div class="input-group style-search-group" style="max-width: 400px; width: 100%;">
+          <input 
+            type="search" 
+            id="searchPost" 
+            class="form-control custom-i" 
+            placeholder="Search..." 
+            style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;"
+          />
+          <button 
+            class="btn custom-i border-start-0" 
+            type="button" 
+            onclick="searchPost()"
+            style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; color: #6f7a8d;"
+          >
+            <i class="fas fa-search hover-cyan"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="col-3 d-flex justify-content-end">
+        <button 
+          class="btn btn-link text-decoration-none text-light opacity-75 hover-cyan fw-semibold py-1 px-3 logbtn" 
+          onclick="logout()"
+        >
+          Logout
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
     <div class="container mt-4 mt-lg-5">
       <div class="row g-4">
         <div class="col-lg-4">
@@ -68,7 +121,11 @@
                 ></textarea>
               </div>
               <div class="mb-3 imgContainer">
-                <img
+            <label class="btn-upload-cyan" for="imgInput">
+    <i class="fas fa-image"></i> Upload Image </label>
+<input type="file" id="imgInput" class="hide-input" accept="image/*" />
+<img class="card-img-top bgimg mt-3" id="previewImg" style="display: none;"/>
+                <!-- <img
                   src="assets/bg1.jpg"
                   alt=""
                   class="bgimg"
@@ -115,7 +172,7 @@
                   alt=""
                   class="bgimg"
                   onclick="addClass('assets/bg8.jpg', event)"
-                />
+                /> -->
               </div>
               <button
                 type="button"
