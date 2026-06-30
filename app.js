@@ -3,28 +3,9 @@ var supabase = window.supabase.createClient(
   "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
 );
 
-// async function postsee(){
-//   try {
-//     const { data, error } = await supabase
-//   .from('ourPost')
-//   .insert({title: titleVal,
-//           description: descrVal,
-//           bgImage: selectedBgImg,})
-//   .select()
-//   console.log(data);
-//   if(error){
-// console.log(error);
 
-//   }
 
-//   } catch (error) {
-//     console.log(error);
-
-//   }
-// }
-// postsee()
-
-// --- DOM Elements & Global State ---
+// DOM Elements
 const postContainer = document.getElementById("post");
 const bgImages = document.getElementsByClassName("bgimg");
 const iconElement = document.getElementById("icon");
@@ -34,22 +15,6 @@ const actionBtn = document.getElementById("upBtn");
 const imageInput = document.getElementById("imgInput");
 const previewImg = document.getElementById("previewImg");
 
-imageInput.addEventListener("change", function () {
-  var file = imageInput.files[0];
-  if (file) {
-    var reader = new FileReader();
-    console.log(reader);
-    reader.onload = function (e) {
-      // console.log("event",e.target.result);
-      const uploadedSrc = e.target.result;
-      previewImg.src = uploadedSrc;
-      previewImg.style.display = "block";
-      addClass(uploadedSrc, { target: previewImg });
-    };
-    
-  }
-  reader.readAsDataURL(file);
-});
 
 // App State
 let selectedBgImg = "";
@@ -58,10 +23,14 @@ let editIndex = null;
 let userFname = null;
 let userLname = null;
 
+
+// onload funtion
 window.onload = function () {
   dataRender();
   showUserIcon();
 };
+
+// user icon
 async function showUserIcon() {
   const {
     data: { user },
@@ -89,6 +58,7 @@ async function showUserIcon() {
   }
 }
 
+// search post
 async function searchPost() {
   let searchPost = document.getElementById("searchPost").value;
   try {
@@ -96,11 +66,7 @@ async function searchPost() {
       .from("postApp")
       .select()
       .or(`title.ilike.%${searchPost},description.ilike.%${searchPost}`);
-      // .or(`title.ilike.%${query}%,description.ilike.%${query}%`);
-    //   const { data, error } = await supabase
-    // .from('postApp')
-    // .select()
-    // .ilike('title', `%${searchPost}`)
+
     console.log(data);
     postContainer.innerHTML = "";
     data.forEach((post) => {
@@ -197,7 +163,25 @@ async function dataRender() {
   }
 }
 
-// --- Submit / Update Post ---
+// upload image
+
+imageInput.addEventListener("change", function () {
+  var file = imageInput.files[0];
+  if (file) {
+    var reader = new FileReader();
+    console.log(reader);
+    reader.onload = function (e) {
+      // console.log("event",e.target.result);
+      const uploadedSrc = e.target.result;
+      previewImg.src = uploadedSrc;
+      previewImg.style.display = "block";
+      addClass(uploadedSrc, { target: previewImg });
+    };
+  }
+  reader.readAsDataURL(file);
+});
+
+//  Submit / Update Post 
 async function sumbitPost() {
   const titleVal = titleInput.value.trim();
   const descrVal = descrInput.value.trim();
@@ -295,7 +279,7 @@ function editPost(e, id, title, description, time, bgimg) {
   });
 }
 
-// --- Delete Post ---
+// Delete Post 
 async function deletePost(id) {
   console.log(id);
 
@@ -340,7 +324,7 @@ async function deletePost(id) {
   });
 }
 
-// --- Background Image Selection ---
+// Background Image Selection 
 function addClass(src, event) {
   selectedBgImg = src;
   removeSelectedBgClass();
@@ -355,7 +339,7 @@ function removeSelectedBgClass() {
   }
 }
 
-// --- Like Button Toggle ---
+// Like Button Toggle
 function toggleLike(likeBtn) {
   if (likeBtn.innerText.trim() === "Like") {
     likeBtn.style.color = "#22D3EE";
@@ -365,6 +349,8 @@ function toggleLike(likeBtn) {
     likeBtn.innerText = "Like";
   }
 }
+
+// logOut
 async function logout() {
   try {
     const { error } = await supabase.auth.signOut();

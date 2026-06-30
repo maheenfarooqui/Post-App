@@ -54,7 +54,7 @@ if (signUpBtn) {
         timer: 2000,
         showConfirmButton: false,
       }).then(() => {
-        window.location.href = "login.html";
+        window.location.href = "dashboard.html";
       });
     } catch (error) {
       console.log(error.message);
@@ -85,11 +85,25 @@ if (logInBtn) {
 
       if (error) {
         console.log(error);
-        Swal.fire({
-          icon: "error",
-          title: "LogIn Failed",
-          text: error.message,
-        });
+
+        // Agar error invalid credentials ka hy (yaani account nahi hy ya password ghalat hy)
+        if (error.message.toLowerCase().includes("invalid login credentials")) {
+          Swal.fire({
+            icon: "error",
+            title: "Account Not Found?",
+            html: `Incorrect credentials or account doesn't exist.<br><br>
+             Don't have an account? <a href="singUp.html" style="color: #22d3ee; font-weight: bold; text-decoration: none;">Create an Account</a>`,
+            confirmButtonColor: "#22d3ee",
+            confirmButtonText: "Try Again",
+          });
+        } else {
+          // Kisi aur kism ke error ke liye normal alert
+          Swal.fire({
+            icon: "error",
+            title: "LogIn Failed",
+            text: error.message,
+          });
+        }
         return;
       }
 
@@ -108,4 +122,3 @@ if (logInBtn) {
     }
   });
 }
-
