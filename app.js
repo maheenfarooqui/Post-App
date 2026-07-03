@@ -1,9 +1,7 @@
 var supabase = window.supabase.createClient(
-  "https://lmqvmgzxbawkkyxmjimh.supabase.co",
-  "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4",
+  "https://dpheuwopfkpdynfgjthm.supabase.co",
+  "sb_publishable_dOaRFmzPIgKgPV5pZDfq0w_vL3GxXdO",
 );
-
-
 
 // DOM Elements
 const postContainer = document.getElementById("post");
@@ -15,14 +13,14 @@ const actionBtn = document.getElementById("upBtn");
 const imageInput = document.getElementById("imgInput");
 const previewImg = document.getElementById("previewImg");
 
-
 // App State
 let selectedBgImg = "";
 let isEditMode = false;
 let editIndex = null;
-let userFname = null;
-let userLname = null;
-
+let currentUserFname;
+let currentUserLname;
+let currentUserId;
+let currentUserEmail;
 
 // onload funtion
 window.onload = function () {
@@ -34,27 +32,35 @@ window.onload = function () {
 async function showUserIcon() {
   const {
     data: { user },
-    error,
+    error: userError,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
-    console.log("No user logged in");
+  if (userError || !user) {
+    Swal.fire({
+      icon: "error",
+      title: "Authentication Error",
+      text: "Please log in to submit a post!",
+      color: "#ffffff",
+      background: "#1e293b",
+      confirmButtonColor: "#ef4444",
+    });
     return;
   }
 
-  if (user.user_metadata) {
-    const firstName = user.user_metadata.first_name || "";
-    const lastName = user.user_metadata.last_name || "";
+  console.log(user);
 
-    const firstInitial = firstName.charAt(0).toUpperCase();
-    const lastInitial = lastName.charAt(0).toUpperCase();
+  currentUserId = user.id;
+  currentUserEmail = user.email;
+  currentUserFname = user.user_metadata.first_name;
+  currentUserLname = user.user_metadata.last_name;
+  console.log(currentUserFname, currentUserLname);
 
-    const iconElement = document.getElementById("icon");
-    if (iconElement) {
-      iconElement.innerHTML = firstInitial + lastInitial;
-    }
-    userFname = firstName;
-    userLname = lastName;
+  const firstInitial = currentUserFname.charAt(0).toUpperCase();
+  const lastInitial = currentUserLname.charAt(0).toUpperCase();
+
+  const iconElement = document.getElementById("icon");
+  if (iconElement) {
+    iconElement.innerHTML = firstInitial + lastInitial;
   }
 }
 
@@ -118,6 +124,7 @@ async function dataRender() {
       .from("postApp")
       .select("*")
       .order("id", { ascending: false });
+    console.log(data);
 
     if (error) {
       console.log(error);
@@ -125,15 +132,24 @@ async function dataRender() {
     }
     postContainer.innerHTML = "";
     data.forEach((post) => {
+      let deletEditBtn = "";
+      if (currentUserId && post.user_id === currentUserId) {
+        deletEditBtn = ` <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+              Edit
+            </button>
+        <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+              Delete
+            </button>`;
+      }
       postContainer.innerHTML += `
       <div class="cardWraper mb-4">
         <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
           <div class="d-flex align-items-center mb-3">
             <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-              ${userFname.charAt(0).toUpperCase()}${userLname.charAt(0).toUpperCase()}
+              ${post.author_fname.charAt(0).toUpperCase()}${post.author_lname.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h6 class="mb-0 text-white fw-bold">${userFname} ${userLname}</h6>
+              <h6 class="mb-0 text-white fw-bold">${post.author_fname} ${post.author_lname}</h6><span>${post.email}</span>
               <span class="post-meta small text-muted">Posted${post.created_at}</span>
             </div>
           </div>
@@ -146,12 +162,8 @@ async function dataRender() {
             Like
           </button>
           <div class="d-flex gap-4 ms-auto">
-            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
-              Edit
-            </button>
-            <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
-              Delete
-            </button>
+            
+            ${deletEditBtn}
           </div>
         </div>
       </div>
@@ -181,7 +193,7 @@ imageInput.addEventListener("change", function () {
   reader.readAsDataURL(file);
 });
 
-//  Submit / Update Post 
+//  Submit / Update Post
 async function sumbitPost() {
   const titleVal = titleInput.value.trim();
   const descrVal = descrInput.value.trim();
@@ -229,6 +241,10 @@ async function sumbitPost() {
           title: titleVal,
           description: descrVal,
           bgImage: selectedBgImg,
+          email: currentUserEmail,
+          user_id: currentUserId,
+          author_fname: currentUserFname,
+          author_lname: currentUserLname,
         })
         .select();
       console.log(data);
@@ -279,7 +295,7 @@ function editPost(e, id, title, description, time, bgimg) {
   });
 }
 
-// Delete Post 
+// Delete Post
 async function deletePost(id) {
   console.log(id);
 
@@ -324,7 +340,7 @@ async function deletePost(id) {
   });
 }
 
-// Background Image Selection 
+// Background Image Selection
 function addClass(src, event) {
   selectedBgImg = src;
   removeSelectedBgClass();

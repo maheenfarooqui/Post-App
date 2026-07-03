@@ -1,6 +1,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-const supbaseKey = "sb_publishable_htZtKiyxzONa6MDBCw1uWA_kUCJXQT4";
-const supbaseUrl = "https://lmqvmgzxbawkkyxmjimh.supabase.co";
+const supbaseKey = "sb_publishable_dOaRFmzPIgKgPV5pZDfq0w_vL3GxXdO";
+const supbaseUrl = "https://dpheuwopfkpdynfgjthm.supabase.co";
 var supabase = createClient(supbaseUrl, supbaseKey);
 const signUpBtn = document.getElementById("sinUp");
 const logInBtn = document.getElementById("logIn");
@@ -32,6 +32,7 @@ if (signUpBtn) {
           data: {
             first_name: userN,
             last_name: userL,
+            email : userE,
           },
         },
       });
@@ -122,3 +123,42 @@ if (logInBtn) {
     }
   });
 }
+
+
+
+const { data } = supabase.auth.onAuthStateChange((event, session) => {
+  console.log(event, session)
+
+  
+  const currentPage = window.location.pathname;
+
+  if (event === 'INITIAL_SESSION') {
+  
+    if (!session && !currentPage.includes('singUp.html')) {
+      Swal.fire({
+        icon: "error",
+        title: "Account Not Found",
+        html: `<a href="singUp.html" style="color: #22d3ee; font-weight: bold; text-decoration: none;">Create an Account</a>`,
+        confirmButtonColor: "#22d3ee",
+        confirmButtonText: "Try Again",
+      }).then(() => {
+
+        // window.location.href = "singUp.html";
+      });
+    }
+
+  } else if (event === 'SIGNED_IN') {
+     Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "LogIn Successfully! Redirecting...",
+        timer: 2000,
+        showConfirmButton: false,
+      }).then(() => {
+        // window.location.href = "dashboard.html";
+      });
+  }
+});
+
+// call unsubscribe to remove the callback
+// data.subscription.unsubscribe()
