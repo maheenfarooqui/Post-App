@@ -116,14 +116,26 @@ async function searchPost() {
     console.log(error);
   }
 }
+// my post toggle
+
+const myPostsToggle = document.getElementById("myPostsToggle");
+
+if (myPostsToggle) {
+  myPostsToggle.addEventListener("change", () => {
+    dataRender();
+  });
+}
 
 // supabase data get
 async function dataRender() {
   try {
-    const { data, error } = await supabase
-      .from("postApp")
-      .select("*")
-      .order("id", { ascending: false });
+    const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
+
+    let query = supabase.from("postApp").select("*");
+    if (isMyPost && currentUserId) {
+      query = query.eq("user_id", currentUserId);
+    }
+    const { data, error } = await query.order("id", { ascending: false });
     console.log(data);
 
     if (error) {
