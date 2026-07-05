@@ -108,6 +108,27 @@ async function searchPost() {
       </div>
     `;
     });
+   if (data.length === 0) {
+  postContainer.innerHTML = `
+    <div class="d-flex flex-column align-items-center justify-content-center text-center p-5 my-5 rounded-4 border border-secondary border-opacity-25" style="background-color: #1e293b; min-height: 250px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);">
+      
+      <!-- Sleek Glowing Post Icon Placeholder -->
+      <div class="mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: rgba(34, 211, 238, 0.1); border-radius: 50%; color: #22d3ee; box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M7 8h10" />
+          <path d="M7 12h10" />
+          <path d="M7 16h10" />
+        </svg>
+      </div>
+
+      <!-- Text Elements -->
+      <h5 class="fw-bold mb-1" style="color: #22d3ee; letter-spacing: 0.5px;">No Posts Found</h5>
+      
+    </div>
+  `;
+  return; // Taake agay loop na chale agar data khali ho
+}
 
     if (error) {
       console.log(error);
