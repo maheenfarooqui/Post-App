@@ -108,8 +108,8 @@ async function searchPost() {
       </div>
     `;
     });
-   if (data.length === 0) {
-  postContainer.innerHTML = `
+    if (data.length === 0) {
+      postContainer.innerHTML = `
     <div class="d-flex flex-column align-items-center justify-content-center text-center p-5 my-5 rounded-4 border border-secondary border-opacity-25" style="background-color: #1e293b; min-height: 250px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);">
       
       <!-- Sleek Glowing Post Icon Placeholder -->
@@ -127,8 +127,8 @@ async function searchPost() {
       
     </div>
   `;
-  return; // Taake agay loop na chale agar data khali ho
-}
+      return; // Taake agay loop na chale agar data khali ho
+    }
 
     if (error) {
       console.log(error);
@@ -189,13 +189,13 @@ if (myPostsToggle) {
 //           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
 //           <p class="text-light opacity-75">${post.description}</p>
 //         </div>
-        
+
 //         <div class="py-3 border-top border-secondary d-flex gap-4">
 //           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
 //             Like
 //           </button>
 //           <div class="d-flex gap-4 ms-auto">
-            
+
 //             ${deletEditBtn}
 //           </div>
 //         </div>
@@ -222,9 +222,9 @@ async function dataRender() {
       console.log(error);
       return;
     }
-    
+
     postContainer.innerHTML = "";
-    
+
     data.forEach((post) => {
       let deletEditBtn = "";
       if (currentUserId && post.user_id === currentUserId) {
@@ -236,10 +236,14 @@ async function dataRender() {
             Delete
           </button>`;
       }
-      
+
       // Safe Initials handling (agar name kabhi khali ho)
-      const fInit = post.author_fname ? post.author_fname.charAt(0).toUpperCase() : "?";
-      const lInit = post.author_lname ? post.author_lname.charAt(0).toUpperCase() : "";
+      const fInit = post.author_fname
+        ? post.author_fname.charAt(0).toUpperCase()
+        : "?";
+      const lInit = post.author_lname
+        ? post.author_lname.charAt(0).toUpperCase()
+        : "";
 
       postContainer.innerHTML += `
       <div class="cardWraper mb-4" style="font-family: 'Inter', sans-serif;">
@@ -249,7 +253,7 @@ async function dataRender() {
               ${fInit}${lInit}
             </div>
             <div>
-              <h6 class="mb-0 text-white fw-bold">${post.author_fname || 'User'} ${post.author_lname || ''}</h6>
+              <h6 class="mb-0 text-white fw-bold">${post.author_fname || "User"} ${post.author_lname || ""}</h6>
               <span class="text-white small opacity-75">${post.email}</span>
               <br/>
               <span class="post-meta small text-muted">Posted: ${new Date(post.created_at).toLocaleDateString()}</span>
@@ -281,7 +285,7 @@ async function dataRender() {
           </div>
 
           <div id="commentsList-${post.id}" class="comments-list d-flex flex-column gap-2" style="max-height: 200px; overflow-y: auto;">
-            <p class="text-muted small mb-0 opacity-75">No comments yet. Be the first to comment!</p>
+            <p class="text-black small mb-0 opacity-75">No comments yet. Be the first to comment!</p>
           </div>
 
         </div>
@@ -299,8 +303,7 @@ function toggleCommentBox(postId) {
   const commentBox = document.getElementById(`commentBox-${postId}`);
   if (commentBox) {
     commentBox.classList.toggle("d-none");
-    
-    // 🔥 Agar box open hua hai, to database se live comments fetch kar ke lao
+
     if (!commentBox.classList.contains("d-none")) {
       fetchComments(postId);
     }
@@ -311,31 +314,29 @@ function toggleCommentBox(postId) {
 
 async function addComment(postId) {
   const inputField = document.getElementById(`commentInput-${postId}`);
-  
+
   if (!inputField || inputField.value.trim() === "") return;
   const commentText = inputField.value.trim();
 
-  
   if (!currentUserId) {
     Swal.fire({
       icon: "error",
       title: "Authentication Error",
       text: "Please log in to add a comment!",
       background: "#1e293b",
-      color: "#ffffff"
+      color: "#ffffff",
     });
     return;
   }
 
   try {
-    
     const { data, error } = await supabase
       .from("commentsApp")
       .insert({
         post_id: postId,
         user_id: currentUserId,
-        user_name: `${currentUserFname} ${currentUserLname}`, 
-        comment_text: commentText
+        user_name: `${currentUserFname} ${currentUserLname}`,
+        comment_text: commentText,
       })
       .select();
 
@@ -349,7 +350,6 @@ async function addComment(postId) {
 
     // 4. Comments ko refresh karo taake naya comment list me dikhe
     fetchComments(postId);
-
   } catch (err) {
     console.log(err);
   }
@@ -362,12 +362,11 @@ async function fetchComments(postId) {
   if (!commentsList) return;
 
   try {
-    
     const { data: comments, error } = await supabase
       .from("commentsApp")
       .select("*")
       .eq("post_id", postId)
-      .order("id", { ascending: true }); 
+      .order("id", { ascending: true });
 
     if (error) {
       console.log("Fetch Comments Error:", error);
@@ -379,7 +378,6 @@ async function fetchComments(postId) {
       return;
     }
 
-    
     commentsList.innerHTML = "";
     comments.forEach((comment) => {
       commentsList.innerHTML += `
@@ -392,7 +390,6 @@ async function fetchComments(postId) {
         </div>
       `;
     });
-
   } catch (err) {
     console.log(err);
   }

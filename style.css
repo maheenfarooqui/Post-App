@@ -92,6 +92,22 @@ body {
   border-radius: 50%;
   transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Dropdown toggle ka default arrow icon hide karne ke liye */
+.user-profile-circle::after {
+  display: none !important;
+}
+
+/* Dropdown items par hover karne se background transparent rahe aur sirf text cyan ho */
+.dropdown-menu .dropdown-item:hover {
+  color: #22d3ee !important;
+}
+
+/* Active ya focus state me background change na ho */
+.dropdown-menu .dropdown-item:focus, 
+.dropdown-menu .dropdown-item:active {
+  background-color: transparent !important;
+  color: #22d3ee !important;
+}
 
 /* --- ACTIVE STATES (Jadu starts here) --- */
 

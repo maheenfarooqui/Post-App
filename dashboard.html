@@ -18,18 +18,12 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg border-bottom border-secondary sticky-top bgdark py-3">
+<nav class="navbar navbar-expand-lg border-bottom border-secondary sticky-top bgdark py-3">
   <div class="container">
     <div class="row w-100 align-items-center g-0">
 
-      <div class="col-3 d-flex justify-content-start">
-              <!-- <div class="form-check form-switch my-3 me-3 ">
-  <input class="form-check-input" type="checkbox" id="myPostsToggle">
-  <label class="form-check-label text-white" for="myPostsToggle">My Posts</label>
-</div> -->
-
-<div class="user-profile-circle shadow-cyan" id="icon"></div>
-              
+      <div class="col-3 d-flex justify-content-start align-items-center">
+        <img src="assets/logoicon.png" alt="Logo" class="logo-nav img-fluid" style="max-height: 100px; object-fit: contain;" />
       </div>
 
       <div class="col-6 d-flex justify-content-center">
@@ -52,13 +46,28 @@
         </div>
       </div>
 
-      <div class="col-3 d-flex justify-content-end">
-        <button 
-          class="btn btn-link text-decoration-none text-light opacity-75 hover-cyan fw-semibold py-1 px-3 logbtn" 
-          onclick="logout()"
-        >
-          Logout
-        </button>
+      <div class="col-3 d-flex justify-content-end align-items-center">
+        <div class="dropdown">
+          <div 
+            class="user-profile-circle shadow-cyan dropdown-toggle" 
+            id="icon" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false"
+          >
+            </div>
+          
+          <ul class="dropdown-menu dropdown-menu-end border border-secondary shadow-lg" aria-labelledby="icon" style="background-color: #1e293b; border-radius: 5px; min-width: 80px; margin-top:3px;">
+            <li>
+              <button 
+                class="dropdown-item btn text-center text-light hover-cyan d-flex align-items-center" 
+                onclick="logout()"
+                style="font-size: 0.9rem; font-family: 'Inter', sans-serif; background: transparent; transition: 0.3s;"
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
 
     </div>
@@ -224,6 +233,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
