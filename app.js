@@ -237,7 +237,7 @@ async function dataRender() {
           </button>`;
       }
 
-      // Safe Initials handling (agar name kabhi khali ho)
+      
       const fInit = post.author_fname
         ? post.author_fname.charAt(0).toUpperCase()
         : "?";

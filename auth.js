@@ -143,7 +143,7 @@ const { data } = supabase.auth.onAuthStateChange((event, session) => {
         confirmButtonText: "Try Again",
       }).then(() => {
 
-        // window.location.href = "singUp.html";
+        window.location.href = "singUp.html";
       });
     }
 
