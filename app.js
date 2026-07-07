@@ -148,6 +148,65 @@ if (myPostsToggle) {
 }
 
 // supabase data get
+// async function dataRender() {
+//   try {
+//     const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
+
+//     let query = supabase.from("postApp").select("*");
+//     if (isMyPost && currentUserId) {
+//       query = query.eq("user_id", currentUserId);
+//     }
+//     const { data, error } = await query.order("id", { ascending: false });
+//     console.log(data);
+
+//     if (error) {
+//       console.log(error);
+//       return;
+//     }
+//     postContainer.innerHTML = "";
+//     data.forEach((post) => {
+//       let deletEditBtn = "";
+//       if (currentUserId && post.user_id === currentUserId) {
+//         deletEditBtn = ` <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+//               Edit
+//             </button>
+//         <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+//               Delete
+//             </button>`;
+//       }
+//       postContainer.innerHTML += `
+//       <div class="cardWraper mb-4">
+//         <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
+//           <div class="d-flex align-items-center mb-3">
+//             <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
+//               ${post.author_fname.charAt(0).toUpperCase()}${post.author_lname.charAt(0).toUpperCase()}
+//             </div>
+//             <div>
+//               <h6 class="mb-0 text-white fw-bold">${post.author_fname} ${post.author_lname}</h6><span>${post.email}</span>
+//               <span class="post-meta small text-muted">Posted${post.created_at}</span>
+//             </div>
+//           </div>
+//           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
+//           <p class="text-light opacity-75">${post.description}</p>
+//         </div>
+        
+//         <div class="py-3 border-top border-secondary d-flex gap-4">
+//           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
+//             Like
+//           </button>
+//           <div class="d-flex gap-4 ms-auto">
+            
+//             ${deletEditBtn}
+//           </div>
+//         </div>
+//       </div>
+//     `;
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return;
+//   }
+// }
 async function dataRender() {
   try {
     const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
@@ -163,41 +222,68 @@ async function dataRender() {
       console.log(error);
       return;
     }
+    
     postContainer.innerHTML = "";
+    
     data.forEach((post) => {
       let deletEditBtn = "";
       if (currentUserId && post.user_id === currentUserId) {
-        deletEditBtn = ` <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
-              Edit
-            </button>
-        <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
-              Delete
-            </button>`;
+        deletEditBtn = ` 
+          <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event, ${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+            Edit
+          </button>
+          <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+            Delete
+          </button>`;
       }
+      
+      // Safe Initials handling (agar name kabhi khali ho)
+      const fInit = post.author_fname ? post.author_fname.charAt(0).toUpperCase() : "?";
+      const lInit = post.author_lname ? post.author_lname.charAt(0).toUpperCase() : "";
+
       postContainer.innerHTML += `
-      <div class="cardWraper mb-4">
+      <div class="cardWraper mb-4" style="font-family: 'Inter', sans-serif;">
         <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
           <div class="d-flex align-items-center mb-3">
-            <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-              ${post.author_fname.charAt(0).toUpperCase()}${post.author_lname.charAt(0).toUpperCase()}
+            <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%; font-weight:700;">
+              ${fInit}${lInit}
             </div>
             <div>
-              <h6 class="mb-0 text-white fw-bold">${post.author_fname} ${post.author_lname}</h6><span>${post.email}</span>
-              <span class="post-meta small text-muted">Posted${post.created_at}</span>
+              <h6 class="mb-0 text-white fw-bold">${post.author_fname || 'User'} ${post.author_lname || ''}</h6>
+              <span class="text-white small opacity-75">${post.email}</span>
+              <br/>
+              <span class="post-meta small text-muted">Posted: ${new Date(post.created_at).toLocaleDateString()}</span>
             </div>
           </div>
           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
           <p class="text-light opacity-75">${post.description}</p>
         </div>
         
-        <div class="py-3 border-top border-secondary d-flex gap-4">
+        <div class="py-3 border-top border-secondary d-flex gap-4 align-items-center">
           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
             Like
           </button>
+          
+          <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="toggleCommentBox(${post.id})">
+            Comment
+          </button>
+
           <div class="d-flex gap-4 ms-auto">
-            
             ${deletEditBtn}
           </div>
+        </div>
+
+        <div id="commentBox-${post.id}" class="comment-section p-3 rounded-3 mb-3 d-none" style="background-color: #1e293b; border: 1px solid #334155;">
+          
+          <div class="input-group input-group-sm mb-3">
+            <input type="text" id="commentInput-${post.id}" class="form-control bg-transparent text-white border-secondary custom-input" placeholder="Write a comment..." style="box-shadow: none;">
+            <button class="btn btn-outline-info text-cyan px-3" type="button" onclick="addComment(${post.id})" style="border-color: #334155;">Post</button>
+          </div>
+
+          <div id="commentsList-${post.id}" class="comments-list d-flex flex-column gap-2" style="max-height: 200px; overflow-y: auto;">
+            <p class="text-muted small mb-0 opacity-75">No comments yet. Be the first to comment!</p>
+          </div>
+
         </div>
       </div>
     `;
@@ -207,7 +293,110 @@ async function dataRender() {
     return;
   }
 }
+// comment controll
 
+function toggleCommentBox(postId) {
+  const commentBox = document.getElementById(`commentBox-${postId}`);
+  if (commentBox) {
+    commentBox.classList.toggle("d-none");
+    
+    // 🔥 Agar box open hua hai, to database se live comments fetch kar ke lao
+    if (!commentBox.classList.contains("d-none")) {
+      fetchComments(postId);
+    }
+  }
+}
+
+//  insert Comments
+
+async function addComment(postId) {
+  const inputField = document.getElementById(`commentInput-${postId}`);
+  
+  if (!inputField || inputField.value.trim() === "") return;
+  const commentText = inputField.value.trim();
+
+  
+  if (!currentUserId) {
+    Swal.fire({
+      icon: "error",
+      title: "Authentication Error",
+      text: "Please log in to add a comment!",
+      background: "#1e293b",
+      color: "#ffffff"
+    });
+    return;
+  }
+
+  try {
+    
+    const { data, error } = await supabase
+      .from("commentsApp")
+      .insert({
+        post_id: postId,
+        user_id: currentUserId,
+        user_name: `${currentUserFname} ${currentUserLname}`, 
+        comment_text: commentText
+      })
+      .select();
+
+    if (error) {
+      console.log("Comment Error:", error);
+      return;
+    }
+
+    // 3. Input field khali karo
+    inputField.value = "";
+
+    // 4. Comments ko refresh karo taake naya comment list me dikhe
+    fetchComments(postId);
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+//  fetch Comments
+
+async function fetchComments(postId) {
+  const commentsList = document.getElementById(`commentsList-${postId}`);
+  if (!commentsList) return;
+
+  try {
+    
+    const { data: comments, error } = await supabase
+      .from("commentsApp")
+      .select("*")
+      .eq("post_id", postId)
+      .order("id", { ascending: true }); 
+
+    if (error) {
+      console.log("Fetch Comments Error:", error);
+      return;
+    }
+
+    if (comments.length === 0) {
+      commentsList.innerHTML = `<p class="text-muted small mb-0 opacity-75">No comments yet. Be the first to comment!</p>`;
+      return;
+    }
+
+    
+    commentsList.innerHTML = "";
+    comments.forEach((comment) => {
+      commentsList.innerHTML += `
+        <div class="p-2 rounded-2 mb-2" style="background-color: #0f172a;">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bold text-white" style="font-size: 0.8rem;">${comment.user_name}</span>
+            <span class="text-muted" style="font-size: 0.7rem;">${new Date(comment.created_at).toLocaleDateString()}</span>
+          </div>
+          <p class="text-light mb-0 small opacity-90" style="font-size: 0.85rem;">${comment.comment_text}</p>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    console.log(err);
+  }
+}
 // upload image
 
 imageInput.addEventListener("change", function () {
