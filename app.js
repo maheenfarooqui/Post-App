@@ -229,10 +229,10 @@ async function dataRender() {
       let deletEditBtn = "";
       if (currentUserId && post.user_id === currentUserId) {
         deletEditBtn = ` 
-          <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event, ${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
+          <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="editPost(event, ${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
             Edit
           </button>
-          <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
+          <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="deletePost(${post.id})">
             Delete
           </button>`;
       }
