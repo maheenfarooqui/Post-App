@@ -207,6 +207,7 @@ if (myPostsToggle) {
 //     return;
 //   }
 // }
+
 async function dataRender() {
   try {
     const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
@@ -237,7 +238,6 @@ async function dataRender() {
           </button>`;
       }
 
-      
       const fInit = post.author_fname
         ? post.author_fname.charAt(0).toUpperCase()
         : "?";
@@ -416,7 +416,8 @@ imageInput.addEventListener("change", function () {
 async function sumbitPost() {
   const titleVal = titleInput.value.trim();
   const descrVal = descrInput.value.trim();
-
+  const file = imageInput.files[0];
+  let bgImageUrl = "";
   if (titleVal === "" || descrVal === "") {
     Swal.fire({
       icon: "error",
@@ -427,6 +428,26 @@ async function sumbitPost() {
       confirmButtonColor: "#ef4444",
     });
     return;
+  }
+  if (file) {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("post-images")
+      .upload(fileName, file);
+    // console.log(fileName);
+
+    if (uploadError) {
+      console.error("Storage Upload Error:", uploadError);
+      return;
+    }
+    const { data: publicUrlData } = supabase.storage
+      .from("post-images")
+      .getPublicUrl(fileName);
+    // console.log(publicUrlData);
+    bgImageUrl = publicUrlData.publicUrl;
+    // console.log(bgImageUrl);
+    selectedBgImg = bgImageUrl;
   }
 
   if (isEditMode) {
