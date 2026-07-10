@@ -4,6 +4,26 @@ const supbaseUrl = "https://dpheuwopfkpdynfgjthm.supabase.co";
 var supabase = createClient(supbaseUrl, supbaseKey);
 const signUpBtn = document.getElementById("sinUp");
 const logInBtn = document.getElementById("logIn");
+const lgoinWithGoogle = document.getElementById("logInWithGoogle");
+
+if (lgoinWithGoogle) {
+  lgoinWithGoogle.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "http://127.0.0.1:5501/dashboard.html",
+        },
+      });
+      if (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+}
 
 if (signUpBtn) {
   signUpBtn.addEventListener("click", async (e) => {
@@ -32,7 +52,7 @@ if (signUpBtn) {
           data: {
             first_name: userN,
             last_name: userL,
-            email : userE,
+            email: userE,
           },
         },
       });
@@ -124,17 +144,13 @@ if (logInBtn) {
   });
 }
 
-
-
 const { data } = supabase.auth.onAuthStateChange((event, session) => {
-  console.log(event, session)
+  console.log(event, session);
 
-  
   const currentPage = window.location.pathname;
 
-  if (event === 'INITIAL_SESSION') {
-  
-    if (!session && !currentPage.includes('singUp.html')) {
+  if (event === "INITIAL_SESSION") {
+    if (!session && !currentPage.includes("singUp.html")) {
       Swal.fire({
         icon: "error",
         title: "Account Not Found",
@@ -142,21 +158,19 @@ const { data } = supabase.auth.onAuthStateChange((event, session) => {
         confirmButtonColor: "#22d3ee",
         confirmButtonText: "Try Again",
       }).then(() => {
-
         // window.location.href = "singUp.html";
       });
     }
-
-  } else if (event === 'SIGNED_IN') {
-     Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "LogIn Successfully! Redirecting...",
-        timer: 2000,
-        showConfirmButton: false,
-      }).then(() => {
-        // window.location.href = "dashboard.html";
-      });
+  } else if (event === "SIGNED_IN") {
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "LogIn Successfully! Redirecting...",
+      timer: 2000,
+      showConfirmButton: false,
+    }).then(() => {
+      // window.location.href = "dashboard.html";
+    });
   }
 });
 

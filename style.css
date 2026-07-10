@@ -96,6 +96,12 @@ body {
 .user-profile-circle::after {
   display: none !important;
 }
+.gimg{
+  width: 20px;
+  margin-bottom: 2px;
+  margin-right: 4px;
+  
+}
 
 /* Dropdown items par hover karne se background transparent rahe aur sirf text cyan ho */
 .dropdown-menu .dropdown-item:hover {
