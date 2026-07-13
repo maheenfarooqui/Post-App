@@ -47,8 +47,6 @@ async function showUserIcon() {
     return;
   }
 
-  console.log(user);
-
   currentUserId = user.id;
   currentUserEmail = user.email;
   currentUserFname = user.user_metadata.first_name;
@@ -64,52 +62,11 @@ async function showUserIcon() {
   }
 }
 
-// search post
-async function searchPost() {
-  let searchPost = document.getElementById("searchPost").value;
-  try {
-    const { data, error } = await supabase
-      .from("postApp")
-      .select()
-      .or(`title.ilike.%${searchPost},description.ilike.%${searchPost}`);
+function renderPosts(data) {
+  postContainer.innerHTML = "";
 
-    console.log(data);
-    postContainer.innerHTML = "";
-    data.forEach((post) => {
-      postContainer.innerHTML += `
-      <div class="cardWraper mb-4">
-        <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
-          <div class="d-flex align-items-center mb-3">
-            <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-              ${userFname.charAt(0).toUpperCase()}${userLname.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <h6 class="mb-0 text-white fw-bold">${userFname} ${userLname}</h6>
-              <span class="post-meta small text-muted">Posted${post.created_at}</span>
-            </div>
-          </div>
-          <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
-          <p class="text-light opacity-75">${post.description}</p>
-        </div>
-        
-        <div class="py-3 border-top border-secondary d-flex gap-4">
-          <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
-            Like
-          </button>
-          <div class="d-flex gap-4 ms-auto">
-            <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
-              Edit
-            </button>
-            <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-    });
-    if (data.length === 0) {
-      postContainer.innerHTML = `
+  if (data.length === 0) {
+    postContainer.innerHTML = `
     <div class="d-flex flex-column align-items-center justify-content-center text-center p-5 my-5 rounded-4 border border-secondary border-opacity-25" style="background-color: #1e293b; min-height: 250px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);">
       
       <!-- Sleek Glowing Post Icon Placeholder -->
@@ -127,125 +84,33 @@ async function searchPost() {
       
     </div>
   `;
-      return; // Taake agay loop na chale agar data khali ho
-    }
-
-    if (error) {
-      console.log(error);
-    }
-  } catch (error) {
-    console.log(error);
+    return;
   }
-}
-// my post toggle
 
-const myPostsToggle = document.getElementById("myPostsToggle");
-
-if (myPostsToggle) {
-  myPostsToggle.addEventListener("change", () => {
-    dataRender();
-  });
-}
-
-// supabase data get
-// async function dataRender() {
-//   try {
-//     const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
-
-//     let query = supabase.from("postApp").select("*");
-//     if (isMyPost && currentUserId) {
-//       query = query.eq("user_id", currentUserId);
-//     }
-//     const { data, error } = await query.order("id", { ascending: false });
-//     console.log(data);
-
-//     if (error) {
-//       console.log(error);
-//       return;
-//     }
-//     postContainer.innerHTML = "";
-//     data.forEach((post) => {
-//       let deletEditBtn = "";
-//       if (currentUserId && post.user_id === currentUserId) {
-//         deletEditBtn = ` <button class="btn text-white p-0 text-decoration-none small" onclick="editPost(event ,${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
-//               Edit
-//             </button>
-//         <button class="btn text-danger p-0 text-decoration-none small" onclick="deletePost(${post.id})">
-//               Delete
-//             </button>`;
-//       }
-//       postContainer.innerHTML += `
-//       <div class="cardWraper mb-4">
-//         <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
-//           <div class="d-flex align-items-center mb-3">
-//             <div class="user-profile-circle me-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-//               ${post.author_fname.charAt(0).toUpperCase()}${post.author_lname.charAt(0).toUpperCase()}
-//             </div>
-//             <div>
-//               <h6 class="mb-0 text-white fw-bold">${post.author_fname} ${post.author_lname}</h6><span>${post.email}</span>
-//               <span class="post-meta small text-muted">Posted${post.created_at}</span>
-//             </div>
-//           </div>
-//           <h5 class="text-cyan mb-2 text-white">${post.title}</h5>
-//           <p class="text-light opacity-75">${post.description}</p>
-//         </div>
-
-//         <div class="py-3 border-top border-secondary d-flex gap-4">
-//           <button class="btn p-0 text-decoration-none small" style="color: #6F7A8D;" onclick="toggleLike(this)">
-//             Like
-//           </button>
-//           <div class="d-flex gap-4 ms-auto">
-
-//             ${deletEditBtn}
-//           </div>
-//         </div>
-//       </div>
-//     `;
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return;
-//   }
-// }
-
-async function dataRender() {
-  try {
-    const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
-
-    let query = supabase.from("postApp").select("*");
-    if (isMyPost && currentUserId) {
-      query = query.eq("user_id", currentUserId);
-    }
-    const { data, error } = await query.order("id", { ascending: false });
-    console.log(data);
-
-    if (error) {
-      console.log(error);
-      return;
+  data.forEach((post) => {
+    let deletEditBtn = "";
+    if (
+      typeof currentUserId !== "undefined" &&
+      currentUserId &&
+      post.user_id === currentUserId
+    ) {
+      deletEditBtn = ` 
+        <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="editPost(event, ${post.id}, '${post.title.replace(/'/g, "\\'")}', '${post.description.replace(/'/g, "\\'")}', '${post.created_at}', '${post.bgImage}')">
+          Edit
+        </button>
+        <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="deletePost(${post.id})">
+          Delete
+        </button>`;
     }
 
-    postContainer.innerHTML = "";
+    const fInit = post.author_fname
+      ? post.author_fname.charAt(0).toUpperCase()
+      : "?";
+    const lInit = post.author_lname
+      ? post.author_lname.charAt(0).toUpperCase()
+      : "";
 
-    data.forEach((post) => {
-      let deletEditBtn = "";
-      if (currentUserId && post.user_id === currentUserId) {
-        deletEditBtn = ` 
-          <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="editPost(event, ${post.id}, '${post.title}', '${post.description}', '${post.created_at}', '${post.bgImage}')">
-            Edit
-          </button>
-          <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="deletePost(${post.id})">
-            Delete
-          </button>`;
-      }
-
-      const fInit = post.author_fname
-        ? post.author_fname.charAt(0).toUpperCase()
-        : "?";
-      const lInit = post.author_lname
-        ? post.author_lname.charAt(0).toUpperCase()
-        : "";
-
-      postContainer.innerHTML += `
+    postContainer.innerHTML += `
       <div class="cardWraper mb-4" style="font-family: 'Inter', sans-serif;">
         <div class="postCard imgContainer p-4 border-0 shadow-sm mb-2" style="background-image: url('${post.bgImage}'); background-size: cover; background-position: center; min-height: 150px;">
           <div class="d-flex align-items-center mb-3">
@@ -254,7 +119,7 @@ async function dataRender() {
             </div>
             <div>
               <h6 class="mb-0 text-white fw-bold">${post.author_fname || "User"} ${post.author_lname || ""}</h6>
-              <span class="text-white small opacity-75">${post.email}</span>
+              <span class="text-white small opacity-75">${post.email || ""}</span>
               <br/>
               <span class="post-meta small text-muted">Posted: ${new Date(post.created_at).toLocaleDateString()}</span>
             </div>
@@ -278,20 +143,64 @@ async function dataRender() {
         </div>
 
         <div id="commentBox-${post.id}" class="comment-section p-3 rounded-3 mb-3 d-none" style="background-color: #1e293b; border: 1px solid #334155;">
-          
           <div class="input-group input-group-sm mb-3">
             <input type="text" id="commentInput-${post.id}" class="form-control bg-transparent text-white border-secondary custom-input" placeholder="Write a comment..." style="box-shadow: none;">
             <button class="btn btn-outline-info text-cyan px-3" type="button" onclick="addComment(${post.id})" style="border-color: #334155;">Post</button>
           </div>
-
           <div id="commentsList-${post.id}" class="comments-list d-flex flex-column gap-2" style="max-height: 200px; overflow-y: auto;">
             <p class="text-black small mb-0 opacity-75">No comments yet. Be the first to comment!</p>
           </div>
-
         </div>
       </div>
     `;
-    });
+  });
+}
+
+// search post
+async function searchPost() {
+  let searchPost = document.getElementById("searchPost").value;
+  try {
+    const { data, error } = await supabase
+      .from("postApp")
+      .select()
+      .or(`title.ilike.%${searchPost},description.ilike.%${searchPost}`);
+
+    console.log(data);
+    renderPosts(data);
+    if (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+// my post toggle
+
+const myPostsToggle = document.getElementById("myPostsToggle");
+
+if (myPostsToggle) {
+  myPostsToggle.addEventListener("change", () => {
+    dataRender();
+  });
+}
+
+async function dataRender() {
+  try {
+    const isMyPost = myPostsToggle ? myPostsToggle.checked : false;
+
+    let query = supabase.from("postApp").select("*");
+    if (isMyPost && currentUserId) {
+      query = query.eq("user_id", currentUserId);
+    }
+    const { data, error } = await query.order("id", { ascending: false });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    postContainer.innerHTML = "";
+    renderPosts(data);
   } catch (err) {
     console.log(err);
     return;
@@ -400,9 +309,8 @@ imageInput.addEventListener("change", function () {
   var file = imageInput.files[0];
   if (file) {
     var reader = new FileReader();
-    console.log(reader);
+
     reader.onload = function (e) {
-      // console.log("event",e.target.result);
       const uploadedSrc = e.target.result;
       previewImg.src = uploadedSrc;
       previewImg.style.display = "block";
@@ -444,9 +352,9 @@ async function sumbitPost() {
     const { data: publicUrlData } = supabase.storage
       .from("post-images")
       .getPublicUrl(fileName);
-    // console.log(publicUrlData);
+
     bgImageUrl = publicUrlData.publicUrl;
-    // console.log(bgImageUrl);
+
     selectedBgImg = bgImageUrl;
   }
 
@@ -503,7 +411,7 @@ async function sumbitPost() {
   previewImg.style.display = "none";
   previewImg.src = "";
   removeSelectedBgClass();
-  dataRender();
+  
 }
 
 // Edit Post
@@ -561,7 +469,6 @@ async function deletePost(id) {
           console.log(error);
           return;
         }
-        dataRender();
       } catch (err) {
         console.log(err);
         return;
@@ -615,3 +522,20 @@ async function logout() {
   }
   window.location.href = "index.html";
 }
+
+supabase
+  .channel("postAPp Channel")
+  .on("postgres_changes", {event: "*", schema: "public", table: "postApp"}, async (payload) => {
+    try {
+      const { data, error } = await supabase
+        .from("postApp")
+        .select("*")
+        .order("id", { ascending: false });
+      renderPosts(data);
+    } catch (error) {
+      console.log(error);
+    }
+  })
+  .subscribe((status) => {
+    console.log(status);
+  });
