@@ -1,0 +1,124 @@
+/* Sidebar and Layout Configurations */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #1e293b; /* Dark Slate matching postCard */
+  border-right: 1px solid #334155;
+  transition: all 0.3s ease;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #6f7a8d;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+  color: #22d3ee !important;
+  background: rgba(34, 211, 238, 0.05);
+  border-left-color: #22d3ee;
+}
+
+/* Dashboard Analytics Cards */
+.stat-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);
+}
+
+/* Modern Data Table Styling */
+/* Table Layout Core Makeover */
+.table {
+  --bs-table-bg: #1e293b !important; /* Forces your beautiful Slate color */
+  --bs-table-color: #e2e8f0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Headers Styling */
+.table thead th {
+  background-color: #111827 !important; /* Deep contrast dark header */
+  color: #6f7a8d !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+/* Rows and Cells Padding */
+.table tbody td {
+  background-color: #1e293b !important;
+  padding: 18px 20px !important; /* Premium breathable spacing */
+  border-bottom: 1px solid #334155 !important; /* Subtle dividing line */
+  vertical-align: middle;
+}
+
+/* Smooth row hover effect */
+.table tbody tr:hover td ,.tablehover td {
+  background-color: #243249 !important; /* Soft glow effect on hover */
+  transition: background-color 0.2s ease;
+}
+
+
+/* Fix table container corners rounding */
+.custom-table {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: 1px solid #334155 !important;
+}
+/* --- Premium Metrics Cards CSS --- */
+.stat-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* Card par mouse laane se lift-up aur glow hoga */
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(34, 211, 238, 0.4) !important;
+  box-shadow: 0 10px 25px -5px rgba(34, 211, 238, 0.15) !important;
+}
+
+/* Icon box dynamic pulse on hover */
+.stat-card:hover .stat-icon-wrapper {
+  background: rgba(34, 211, 238, 0.15) !important;
+  border-color: rgba(34, 211, 238, 0.4) !important;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+/* Card background ambient light circles */
+.glow-effect {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 130px;
+  height: 130px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.12) 0%, rgba(34, 211, 238, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+.stat-card:hover .glow-effect {
+  transform: scale(1.5);
+}

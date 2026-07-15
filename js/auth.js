@@ -53,6 +53,7 @@ if (signUpBtn) {
             first_name: userN,
             last_name: userL,
             email: userE,
+            role: "user"
           },
         },
       });
@@ -174,5 +175,3 @@ const { data } = supabase.auth.onAuthStateChange((event, session) => {
   }
 });
 
-// call unsubscribe to remove the callback
-// data.subscription.unsubscribe()

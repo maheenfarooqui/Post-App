@@ -29,6 +29,7 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
+
   cursor: pointer;
   transition: 0.3s;
 }

@@ -34,7 +34,7 @@ async function showUserIcon() {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-
+ 
   if (userError || !user) {
     Swal.fire({
       icon: "error",
@@ -60,6 +60,22 @@ async function showUserIcon() {
   if (iconElement) {
     iconElement.innerHTML = firstInitial + lastInitial;
   }
+   if (user.user_metadata.role === "admin") {
+    iconElement.innerHTML = '<span style="font-size:12px;">Admin</span>'
+    let menu = document.getElementById("dropdownMenu");
+    menu.insertAdjacentHTML(
+      "afterbegin",
+      `
+  <li>
+    <a class="dropdown-item text-white fw-bold" href="adminDashboard.html">
+      <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+    </a>
+  </li>
+  <li><hr class="dropdown-divider border-secondary"></li>
+`,
+    );
+  }
+
 }
 
 function renderPosts(data) {
@@ -88,11 +104,15 @@ function renderPosts(data) {
   }
 
   data.forEach((post) => {
+    console.log(post);
+
     let deletEditBtn = "";
     if (
-      typeof currentUserId !== "undefined" &&
-      currentUserId &&
-      post.user_id === currentUserId
+      (typeof currentUserId !== "undefined" &&
+        currentUserId &&
+        post.user_id === currentUserId) ||
+      (typeof currentUserEmail !== "undefined" &&
+        currentUserEmail === "maheenzuhra@gmail.com")
     ) {
       deletEditBtn = ` 
         <button class="btn p-0 text-decoration-none small hover-cyan" style="color: #6F7A8D;" onclick="editPost(event, ${post.id}, '${post.title.replace(/'/g, "\\'")}', '${post.description.replace(/'/g, "\\'")}', '${post.created_at}', '${post.bgImage}')">
@@ -411,7 +431,6 @@ async function sumbitPost() {
   previewImg.style.display = "none";
   previewImg.src = "";
   removeSelectedBgClass();
-  
 }
 
 // Edit Post
@@ -445,7 +464,7 @@ function editPost(e, id, title, description, time, bgimg) {
 
 // Delete Post
 async function deletePost(id) {
-  console.log(id);
+  // console.log(id);
 
   Swal.fire({
     icon: "warning",
@@ -525,17 +544,21 @@ async function logout() {
 
 supabase
   .channel("postAPp Channel")
-  .on("postgres_changes", {event: "*", schema: "public", table: "postApp"}, async (payload) => {
-    try {
-      const { data, error } = await supabase
-        .from("postApp")
-        .select("*")
-        .order("id", { ascending: false });
-      renderPosts(data);
-    } catch (error) {
-      console.log(error);
-    }
-  })
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "postApp" },
+    async (payload) => {
+      try {
+        const { data, error } = await supabase
+          .from("postApp")
+          .select("*")
+          .order("id", { ascending: false });
+        renderPosts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  )
   .subscribe((status) => {
     console.log(status);
   });
