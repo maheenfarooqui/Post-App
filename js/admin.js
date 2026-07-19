@@ -73,6 +73,7 @@ async function loadAllPost() {
     console.log(error);
   }
 }
+// render post
 async function renderAllPost(data) {
   adminPostLogs.innerHTML = "";
   if (data.length === 0) {
@@ -141,7 +142,7 @@ window.searchPost = async function () {
     console.log(error);
   }
 };
-
+// loadUser funtion
 async function loadUsersControl() {
   let adminUserLogs = document.getElementById("adminUserLogs");
   try {
