@@ -1,14 +1,24 @@
-let tl = gsap.timeline();
+// uth anime
+gsap.from("#mylogo", {
+  x: -200,
+  opacity: 0,
+});
+gsap.from("#formAnim", {
+  x: 400,
+  opacity: 0,
+});
 
-tl.from("#mylogo",{
-    y:-20,
-    opacity:0,
-    delay:1,
+// dashboard anime
 
-})
-tl.from("#formAnim",{
-    y:-20,
-    opacity:0,
-    delay:1,
-
-})
+gsap.from("#mylogoAnim", {
+  opacity: 0,
+  y: -20,
+});
+gsap.from("#searchAnim", {
+  opacity: 0,
+  y: -20,
+});
+gsap.from("#iconAnim", {
+  opacity: 0,
+  y: -20,
+});
