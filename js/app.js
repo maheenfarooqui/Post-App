@@ -51,7 +51,7 @@ async function showUserIcon() {
   currentUserEmail = user.email;
   currentUserFname = user.user_metadata.first_name;
   currentUserLname = user.user_metadata.last_name;
-  console.log(currentUserFname, currentUserLname);
+  // console.log(currentUserFname, currentUserLname);
 
   const firstInitial = currentUserFname.charAt(0).toUpperCase();
   const lastInitial = currentUserLname.charAt(0).toUpperCase();
