@@ -22,3 +22,9 @@ gsap.from("#iconAnim", {
   opacity: 0,
   y: -20,
 });
+gsap.from("#post", {
+  opacity: 0,
+  y: 20,
+  stagger: 0.5,
+  scrollTrigger:"#post"
+});
