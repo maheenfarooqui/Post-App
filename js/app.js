@@ -174,6 +174,17 @@ function renderPosts(data) {
       </div>
     `;
   });
+  gsap.utils.toArray(".cardWraper").forEach((card) => {
+  gsap.from(card, {
+    opacity: 0,
+    y: 50,
+    duration: 0.5,
+    scrollTrigger: {
+      trigger: card,
+      start: "top 95%", // Jab ye specific card screen par aaye
+    }
+  });
+});
 }
 
 // search post
