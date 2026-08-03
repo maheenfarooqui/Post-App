@@ -9,8 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="YOUR_LIVE_DEMO_LINK">Live Demo</a> •
-  <a href="https://github.com/maheenfarooqui/Post-App">GitHub Repository</a>
+  <a href="https://vibenetpost.netlify.app/">Live Demo</a>
 </p>
 
 ---
@@ -105,7 +104,7 @@ VIBENET/
 Clone the repository
 
 ```bash
-git clone https://github.com/maheenfarooqui/Post-App.git
+git clone https://github.com/maheenfarooqui/Vibe-Net
 ```
 
 Go to the project directory
@@ -157,7 +156,7 @@ Supabase Row Level Security (RLS) is used to protect user data.
 
 ## 🌐 Live Demo
 
-YOUR_LIVE_DEMO_LINK
+https://vibenetpost.netlify.app/
 
 ---
 
@@ -167,6 +166,5 @@ YOUR_LIVE_DEMO_LINK
 
 Frontend Developer
 
-- Portfolio: https://your-portfolio.vercel.app
-- LinkedIn: https://linkedin.com/in/your-linkedin
-- GitHub: https://github.com/maheenfarooqui
+- Portfolio: https://maheen-zuhra-portfolio.vercel.app/
+- LinkedIn: https://www.linkedin.com/in/maheen-zuhra/
