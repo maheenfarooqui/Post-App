@@ -1,99 +1,172 @@
 <p align="center">
-  <img src="assets/logo.png" alt="VIBENET Logo" height="100">
+  <img src="./assets/logo.png" alt="VIBENET Logo" width="120" />
 </p>
 
-> **CONNECT. FEEL. SYNC.**
+<h1 align="center">VIBENET</h1>
 
-VIBENET is a dynamic, full-stack post-sharing web application designed to let users seamlessly connect, share thoughts, upload media, and engage with each other in real-time. Built with a highly responsive frontend and a powerful serverless backend.
+<p align="center">
+  Social Media Platform
+</p>
 
----
-
-## 🚀 Features
-
-* **Secure Authentication:** User signup, login, and logout functionalities powered entirely by Supabase Auth.
-* **Post Creation & Media Uploads:** Users can write posts and upload accompanying images directly to Supabase Storage Buckets.
-* **Smart CRUD Permissions:** Users have full control (Edit/Delete) over their own posts, while other users' content remains strictly protected.
-* **Social Interactions:** Real-time engagement features including a persistent **Like System** and **Comment Tracking**.
-* **Responsive UI:** A sleek, modern, and mobile-friendly design built utilizing Bootstrap 5 utility classes and custom CSS.
+<p align="center">
+  <a href="YOUR_LIVE_DEMO_LINK">Live Demo</a> •
+  <a href="https://github.com/maheenfarooqui/Post-App">GitHub Repository</a>
+</p>
 
 ---
 
-## 🛠️ Tech Stack
+## 📖 Overview
 
-* **Frontend:** HTML5, CSS3, JavaScript (ES6+ / Pure Vanilla JS)
-* **UI Framework:** Bootstrap 5
-* **Backend-as-a-Service (BaaS):** Supabase
-    * *Authentication* (User Management & Sessions)
-    * *Database* (PostgreSQL Database for CRUD, Likes, and Comments)
-    * *Storage* (Buckets for managing user-uploaded post images)
+VIBENET is a full-stack social media platform where users can create accounts, share posts, upload images, like content, and interact through comments in real time. Built using Vanilla JavaScript and Supabase, the application demonstrates secure authentication, media storage, and complete CRUD functionality with a responsive user interface.
 
 ---
 
-## 📁 Project Structure
+## ✨ Features
+
+- Secure user authentication
+- Create, edit, and delete posts
+- Upload post images
+- Like system
+- Comment system
+- Responsive design
+- Real-time database synchronization
+- Protected CRUD permissions
+- Modern Bootstrap UI
+
+---
+
+## 🎯 Problem
+
+Traditional static web applications lack real-time social interactions and secure user-generated content management. Users need a platform where they can safely create, share, and engage with content while maintaining ownership of their posts.
+
+---
+
+## 💡 Solution
+
+Developed a full-stack social media application using Supabase Authentication, PostgreSQL, and Storage. Users can securely create accounts, publish posts with images, interact through likes and comments, and manage only their own content using Row Level Security (RLS).
+
+---
+
+## 🚀 Result
+
+Delivered a responsive social platform featuring authentication, media uploads, protected CRUD operations, and real-time social interactions, demonstrating modern Backend-as-a-Service development with Supabase.
+
+---
+
+## 🛠 Tech Stack
+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Bootstrap 5
+- Supabase Authentication
+- PostgreSQL
+- Supabase Storage
+
+---
+
+## 📚 Engineering Insights
+
+- Building a complete CRUD application
+- Working with Supabase Authentication
+- Managing PostgreSQL data using Supabase
+- Implementing Row Level Security (RLS)
+- Uploading and managing media with Storage Buckets
+- Building responsive interfaces using Bootstrap
+- Designing secure user-based permissions
+
+---
+
+## 📂 Folder Structure
 
 ```text
-├── index.html          # Main application interface (Login)
+VIBENET/
+│
+├── assets/
+│   ├── logo.png
+│   └── logoicon.png
+│
 ├── css/
-│   └── style.css       # Custom styling and design overrides
+│   └── style.css
+│
 ├── js/
-│   ├── auth.js         # Supabase authentication logic
-│   ├── app.js          # Main feed management, CRUD operations, likes, and comments
+│   ├── auth.js
+│   ├── app.js
+│   └── config.js
+│
+├── index.html
+├── README.md
+```
 
+---
 
-⚙️ Setup & Installation Instructions
+## ⚙️ Installation
 
-Follow these steps to set up and run VIBENET on your local machine:
+Clone the repository
 
-1. Clone the Repository
-First, clone the repository to your local system:
-
-Bash
+```bash
 git clone https://github.com/maheenfarooqui/Post-App.git
+```
+
+Go to the project directory
+
+```bash
 cd Post-App
+```
 
-2. Configure Supabase Backend
-Go to the Supabase Dashboard and create a new project.
+Install project dependencies (if applicable)
 
-Set up your database tables for posts, comments, and likes.
+```bash
+npm install
+```
 
-Create a public Storage Bucket named images to host post media uploads.
+Configure Supabase
 
-Enable Row Level Security (RLS) on your tables to ensure data isolation.
+- Create a new Supabase project
+- Create the required database tables
+- Create a public Storage Bucket named **images**
+- Enable Row Level Security (RLS)
+- Add your project URL and Anon Key inside `js/config.js`
 
-3. Connect Environment Keys
-Create a configuration file (e.g., js/config.js) within your project and initialize your Supabase client using your project credentials:
+Run the project locally
 
-JavaScript
-import { createClient } from '@supabase/supabase-js'
+Using VS Code Live Server
 
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'
+```text
+Right-click index.html → Open with Live Server
+```
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-4. How to Run the Project Locally
-Since this is a pure Vanilla JS application, you can run it using any local development server:
+Or
 
-Using VS Code Live Server (Recommended):
-
-Open the project folder in VS Code.
-
-Right-click on the index.html file.
-
-Select "Open with Live Server". The application will automatically launch in your default browser.
-
-Using NodeJS (Alternative):
-If you have http-server installed globally, run the following command in your terminal:
-
-Bash
+```bash
 npx http-server
-🔒 Security & Row Level Security (RLS) Policies
-To maintain data integrity and strict privacy, backend access is guarded by specific RLS policies:
+```
 
-SELECT: Allows all authenticated users to read posts, comments, and likes.
+---
 
-INSERT: Restricts content creation features strictly to active, authenticated user sessions.
+## 🔒 Security
 
-UPDATE / DELETE: Ensures a user can only modify or delete a row if auth.uid() == user_id matches their account.
-└── assets/
-    ├── logo.png        # Full application logo
-    └── logoicon.png    # Application icon
+Supabase Row Level Security (RLS) is used to protect user data.
+
+- Authenticated users can read posts, likes, and comments.
+- Users can create content only after authentication.
+- Users can update or delete only their own posts.
+- Media uploads are securely managed through Supabase Storage.
+
+---
+
+## 🌐 Live Demo
+
+YOUR_LIVE_DEMO_LINK
+
+---
+
+## 👩‍💻 Author
+
+**Maheen Zuhra**
+
+Frontend Developer
+
+- Portfolio: https://your-portfolio.vercel.app
+- LinkedIn: https://linkedin.com/in/your-linkedin
+- GitHub: https://github.com/maheenfarooqui
