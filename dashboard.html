@@ -109,63 +109,30 @@
     <i class="fas fa-image"></i> Upload Image </label>
 <input type="file" id="imgInput" class="hide-input" accept="image/*" />
 <img class="card-img-top bgimg mt-3" id="previewImg" style="display: none;"/>
-                <!-- <img
-                  src="assets/bg1.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg1.jpg', event)"
-                />
-                <img
-                  src="assets/bg2.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg2.jpg', event)"
-                />
-                <img
-                  src="assets/bg3.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg3.jpg', event)"
-                />
-                <img
-                  src="assets/bg4.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg4.jpg', event)"
-                />
-                <img
-                  src="assets/bg5.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg5.jpg', event)"
-                />
-                <img
-                  src="assets/bg6.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg6.jpg', event)"
-                />
-                <img
-                  src="assets/bg7.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg7.jpg', event)"
-                />
-                <img
-                  src="assets/bg8.jpg"
-                  alt=""
-                  class="bgimg"
-                  onclick="addClass('assets/bg8.jpg', event)"
-                /> -->
+               
               </div>
               <button
+  type="button"
+  id="upBtn"
+  onclick="sumbitPost()"
+  class="btn btn-cyan w-100 fw-bold py-2 shadow-sm svg-btn"
+>
+  <span class="btn-text">Post Now</span>
+
+  <!-- SVG Border Overlay -->
+  <svg class="btn-svg" viewBox="0 0 180 60" preserveAspectRatio="none">
+    <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
+    <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+  </svg>
+</button>
+              <!-- <button
                 type="button"
                 id="upBtn"
                 onclick="sumbitPost()"
                 class="btn btn-cyan w-100 fw-bold py-2 shadow-sm"
               >
                 Post Now
-              </button>
+              </button> -->
             </form>
           </div>
         </div>

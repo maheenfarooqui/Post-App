@@ -577,6 +577,8 @@ supabase
 
 
   // gsap
+
+  
   // 1. Container aur settings configure karien
 const container = document.getElementById('particle-container');
 const numParticles = 50; // Kitne particles chaye
@@ -634,3 +636,29 @@ function animateParticle(particle) {
         ease: "sine.inOut"
     });
 }
+
+const btn = document.getElementById("upBtn");
+const hlLine = btn.querySelector(".hl-line");
+
+// Hover In: Border Line Draw & Move Effect
+btn.addEventListener("mouseenter", () => {
+  gsap.to(hlLine, {
+    strokeDashoffset: 0, // Line charon taraf move hokar complete karegi
+    duration: 0.8,
+    ease: "power2.out",
+  });
+
+  // Optional: Subtle button scale for premium feel
+  gsap.to(btn, { scale: 1.02, duration: 0.3 });
+});
+
+// Hover Out: Reset Line Position
+btn.addEventListener("mouseleave", () => {
+  gsap.to(hlLine, {
+    strokeDashoffset: 480, // Reset back to initial hidden state
+    duration: 0.6,
+    ease: "power2.in",
+  });
+
+  gsap.to(btn, { scale: 1, duration: 0.3 });
+});
