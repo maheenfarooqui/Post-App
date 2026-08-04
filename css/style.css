@@ -15,6 +15,23 @@ body {
     z-index: 2;
     background: transparent;
 }
+.roundaerro{
+  background-color: #22d3ee;
+  width: 35px ;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #0f172a;
+  position: fixed;
+  top:510px;
+  left: 20px;
+}
+#aerrow{
+  display: inline-block;
+}
 #particle-container {
     position: fixed; /* Screen par fixed rhe ga */
     top: 0;

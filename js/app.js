@@ -34,7 +34,7 @@ async function showUserIcon() {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
- 
+
   if (userError || !user) {
     Swal.fire({
       icon: "error",
@@ -60,8 +60,8 @@ async function showUserIcon() {
   if (iconElement) {
     iconElement.innerHTML = firstInitial + lastInitial;
   }
-   if (user.user_metadata.role === "admin") {
-    iconElement.innerHTML = '<span style="font-size:12px;">Admin</span>'
+  if (user.user_metadata.role === "admin") {
+    iconElement.innerHTML = '<span style="font-size:12px;">Admin</span>';
     let menu = document.getElementById("dropdownMenu");
     menu.insertAdjacentHTML(
       "afterbegin",
@@ -75,7 +75,6 @@ async function showUserIcon() {
 `,
     );
   }
-
 }
 
 function renderPosts(data) {
@@ -175,16 +174,16 @@ function renderPosts(data) {
     `;
   });
   gsap.utils.toArray(".cardWraper").forEach((card) => {
-  gsap.from(card, {
-    opacity: 0,
-    y: 50,
-    duration: 0.5,
-    scrollTrigger: {
-      trigger: card,
-      start: "top 95%", // Jab ye specific card screen par aaye
-    }
+    gsap.from(card, {
+      opacity: 0,
+      y: 50,
+      duration: 0.5,
+      scrollTrigger: {
+        trigger: card,
+        start: "top 95%", // Jab ye specific card screen par aaye
+      },
+    });
   });
-});
 }
 
 // search post
@@ -574,67 +573,64 @@ supabase
     console.log(status);
   });
 
+// gsap
 
-
-  // gsap
-
-  
-  // 1. Container aur settings configure karien
-const container = document.getElementById('particle-container');
+// 1. Container aur settings configure karien
+const container = document.getElementById("particle-container");
 const numParticles = 50; // Kitne particles chaye
 
 // 2. Loop chala kr particles create karien
 for (let i = 0; i < numParticles; i++) {
-    createParticle();
+  createParticle();
 }
 
 function createParticle() {
-    // A. Element create karien
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    container.appendChild(particle);
+  // A. Element create karien
+  const particle = document.createElement("div");
+  particle.className = "particle";
+  container.appendChild(particle);
 
-    // B. Random size set karien (small)
-    const size = Math.random() * 2 + 2; // 2px se 7px tak
-    
-    // C. Initial position random set karien (screen ke bahr ya edge par)
-    gsap.set(particle, {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        width: size,
-        height: size,
-        opacity: Math.random() * 0.5 + 0.2 // Random dhundla-pan
-    });
+  // B. Random size set karien (small)
+  const size = Math.random() * 2 + 2; // 2px se 7px tak
 
-    // D. GSAP Animation apply karien (Slow floating movement)
-    animateParticle(particle);
+  // C. Initial position random set karien (screen ke bahr ya edge par)
+  gsap.set(particle, {
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    width: size,
+    height: size,
+    opacity: Math.random() * 0.5 + 0.2, // Random dhundla-pan
+  });
+
+  // D. GSAP Animation apply karien (Slow floating movement)
+  animateParticle(particle);
 }
 
 function animateParticle(particle) {
-    // GSAP se random movement create karien
-    gsap.to(particle, {
-        // Random destination position
-        x: `+=${Math.random() * 200 - 100}`, // -100px se +100px tak movement
-        y: `+=${Math.random() * 200 - 100}`,
-        
-        // Random animation duration (slow)
-        duration: Math.random() * 10 + 5, // 5s se 15s tak
-        
-        // Linear ease taake movement constant rhe
-        ease: "none",
-        
-        // Jab animation khtm ho, dobara start karo new random values ke sath
-        onComplete: () => animateParticle(particle) 
-    });
+  // GSAP se random movement create karien
+  gsap.to(particle, {
+    // Random destination position
+    x: `+=${Math.random() * 200 - 100}`, // -100px se +100px tak movement
+    y: `+=${Math.random() * 200 - 100}`,
 
-    // Fade in/out animation alag se taake wo chamakte hue lagein
-    gsap.to(particle, {
-        opacity: Math.random() * 0.8 + 0.1,
-        duration: Math.random() * 2 + 1,
-        repeat: -1, // Infinite loop
-        yoyo: true, // Fade in phir fade out
-        ease: "sine.inOut"
-    });
+    // Random animation duration (slow)
+    duration: Math.random() * 10 + 5, // 5s se 15s tak
+
+    // Linear ease taake movement constant rhe
+    ease: "none",
+
+    // Jab animation khtm ho, dobara start karo new random values ke sath
+    onComplete: () => animateParticle(particle),
+  });
+
+  // Fade in/out animation alag se taake wo chamakte hue lagein
+  gsap.to(particle, {
+    opacity: Math.random() * 0.8 + 0.1,
+    duration: Math.random() * 2 + 1,
+    repeat: -1, // Infinite loop
+    yoyo: true, // Fade in phir fade out
+    ease: "sine.inOut",
+  });
 }
 
 const btn = document.getElementById("upBtn");
@@ -661,4 +657,24 @@ btn.addEventListener("mouseleave", () => {
   });
 
   gsap.to(btn, { scale: 1, duration: 0.3 });
+});
+
+window.addEventListener("wheel", function (e) {
+  if (e.deltaY > 0) {
+    console.log("down"); // Fixed log
+
+    gsap.to("#arrow", {
+      rotate: 180,
+      duration: 0.3,
+      ease: "power1.out",
+    });
+  } else if (e.deltaY < 0) {
+    console.log("up"); // Fixed log
+
+    gsap.to("#arrow", {
+      rotate: 0,
+      duration: 0.3,
+      ease: "power1.out",
+    });
+  }
 });
